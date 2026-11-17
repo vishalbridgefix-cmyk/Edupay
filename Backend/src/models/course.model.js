@@ -93,14 +93,12 @@ const courseSchema = new mongoose.Schema(
       default: "Draft",
     },
 
-    // The instructor who owns this course
     instructor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
 
-    // Lessons are stored inside the course document
     lessons: {
       type: [lessonSchema],
       default: [],

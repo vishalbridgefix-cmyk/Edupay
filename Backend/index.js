@@ -9,5 +9,8 @@ connectTODb();
 const PORT = process.env.PORT;
 
 server.listen(PORT, () => {
-  console.log("Server is running on port 3000");
+  console.log("Server Started", {
+    port: process.env.PORT,
+    env: process.env.NODE_ENV,
+  });
 });

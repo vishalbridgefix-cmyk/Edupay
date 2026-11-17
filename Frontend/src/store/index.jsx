@@ -1,5 +1,5 @@
-import { configureStore } from '@reduxjs/toolkit'
-import combineReducers from 'redux'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
+
 import instructor from './slice/instructorSlice'
 const rootReducer = combineReducers({ instructor })
 const store = configureStore({

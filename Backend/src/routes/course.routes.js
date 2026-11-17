@@ -1,51 +1,47 @@
-
-const express = require("express");
+import express from 'express'
 const router = express.Router();
+import courseController from '../controllers/course.controller.js'
+import validateCourse from '../validations/course.validation.js'
 
-const courseController = require("../controllers/course.controller");
-
-// Route for create course post route
-// /api/courses
+// Create Course
+// POST /api/courses
 router.post(
     "/",
+    validateCourse,
     courseController.createCourse
 );
 
-
-//For checking instructor course is present or not get method
-// /api/courses/mine
+// Get Instructor's Own Courses
+// GET /api/courses/mine
 router.get(
     "/mine",
     courseController.getMyCourses
 );
 
-
-// All course detail get route
-// /api/courses/:courseId
+// Get Course Details
+// GET /api/courses/:courseId
 router.get(
     "/:courseId",
     courseController.getCourseById
 );
 
-
-//Update course using id patch method
-// /api/courses/:courseId
+// Update Course
+// PATCH /api/courses/:courseId
 router.patch(
     "/:courseId",
+    validateCourse,
     courseController.updateCourse
 );
 
-
-//Delete course delete method
-// /api/courses/:courseId
+// Delete Course
+// DELETE /api/courses/:courseId
 router.delete(
     "/:courseId",
     courseController.deleteCourse
 );
 
-
-//Publish route using patch method
-// /api/courses/:courseId/publish
+// Publish Course
+// PATCH /api/courses/:courseId/publish
 router.patch(
     "/:courseId/publish",
     courseController.publishCourse

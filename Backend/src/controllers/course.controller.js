@@ -1,6 +1,4 @@
-
-const Course = require("../models/course.model");
-
+import Course from '../models/course.model.js'
 // Route for create course post route
 // /api/courses
 

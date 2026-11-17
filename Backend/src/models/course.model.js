@@ -1,37 +1,4 @@
-
-import mongoose from "mongoose";
-
-// Schema for one lesson
-const lessonSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    description: {
-      type: String,
-      default: "",
-    },
-
-    videoUrl: {
-      type: String,
-      default: "",
-    },
-
-    duration: {
-      type: Number,
-      default: 0,
-    },
-
-    order: {
-      type: Number,
-      default: 1,
-    },
-  },
-  { timestamps: true }
-);
+import mongoose from 'mongoose'
 
 // Main Course schema
 const courseSchema = new mongoose.Schema(
@@ -100,13 +67,14 @@ const courseSchema = new mongoose.Schema(
     },
 
     lessons: {
-      type: [lessonSchema],
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Lesson",
       default: [],
     },
   },
   { timestamps: true }
 );
 
-const Course = mongoose.model("Course", courseSchema);
+const courseModel = mongoose.model("course", courseSchema);
 
-export default Course;
+export default CourseModel;

@@ -5,7 +5,8 @@ import cors from "cors";
 import path from "path"
 import morgan from "morgan"
 
-import userRoutes from "./routes/user.routes.js";
+import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js"
 
 const app = express();
 
@@ -18,7 +19,8 @@ app.use(morgan("dev"))
 
 app.use("/uploads", express.static("uploads"));
 
-app.use("/api/auth", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 const server = http.createServer(app);
 

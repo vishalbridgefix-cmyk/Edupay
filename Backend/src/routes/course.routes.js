@@ -47,4 +47,4 @@ router.patch(
     courseController.publishCourse
 );
 
-module.exports = router;
+export default router;

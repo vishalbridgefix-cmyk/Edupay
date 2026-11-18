@@ -281,7 +281,7 @@ const publishCourse = async (req, res) => {
 
 // Export all the controller for using the routes
 
-module.exports = {
+export {
     createCourse,
     getMyCourses,
     getCourseById,

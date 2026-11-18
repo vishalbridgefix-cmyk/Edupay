@@ -96,4 +96,4 @@ export const validateCourse = (req, res, next) => {
   next();
 };
 
-module.exports = { validateCourse };
+export default validateCourse;

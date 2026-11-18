@@ -1,12 +1,22 @@
-import express from 'express'
+
+import express from "express";
+
+import * as courseController from "../controllers/course.controller.js";
+
+import { validateCourse } from "../validations/course.validation.js";
+
+import {authMiddleware, instructorMiddleware} from '../middleware/authMiddleware.js'
+
+import { validateUpdateCourse } from "../validations/course.validation.js";
+
 const router = express.Router();
-import courseController from '../controllers/course.controller.js'
-import validateCourse from '../validations/course.validation.js'
 
 // Create Course
 // POST /api/courses
 router.post(
     "/",
+    authMiddleware,
+    instructorMiddleware,
     validateCourse,
     courseController.createCourse
 );
@@ -15,6 +25,8 @@ router.post(
 // GET /api/courses/mine
 router.get(
     "/mine",
+    authMiddleware,
+    instructorMiddleware,
     courseController.getMyCourses
 );
 
@@ -29,7 +41,9 @@ router.get(
 // PATCH /api/courses/:courseId
 router.patch(
     "/:courseId",
-    validateCourse,
+    authMiddleware,
+    instructorMiddleware,
+    validateUpdateCourse,
     courseController.updateCourse
 );
 
@@ -37,6 +51,8 @@ router.patch(
 // DELETE /api/courses/:courseId
 router.delete(
     "/:courseId",
+    authMiddleware,
+    instructorMiddleware,
     courseController.deleteCourse
 );
 
@@ -44,6 +60,8 @@ router.delete(
 // PATCH /api/courses/:courseId/publish
 router.patch(
     "/:courseId/publish",
+    authMiddleware,
+    instructorMiddleware,
     courseController.publishCourse
 );
 

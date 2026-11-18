@@ -8,6 +8,7 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({extended : true}))
 
 // Course Routes
 app.use("/api/courses", courseRoutes);

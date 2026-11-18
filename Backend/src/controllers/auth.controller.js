@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 import userModel from "../models/user.model.js";
 import { HttpStatusCode } from "../constants/httpStatus.js";
+import tokenBlacklistModel from "../models/tokenBlacklist.model.js";
 
 import {
   registerSchema,
@@ -10,10 +11,11 @@ import {
   
 } from "../validations/user.validation.js";
 
+
 export const registerController = async (req, res) => {
   try {
-    const { error } = registerSchema.validate(req.body);
-    console.log(error);
+    const { error, value } = registerSchema.validate(req.body);
+
     if (error) {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
         message: error.details[0].message,
@@ -21,16 +23,20 @@ export const registerController = async (req, res) => {
       });
     }
 
-    const { fullName, email, password, phone, role } = req.body;
+    const {
+      fullName,
+      email,
+      password,
+      phone,
+      age,
+      gender,
+      address,
+      role,
+    } = value;
 
-    const profileImage = req.file ? `/uploads/${req.file.filename}` : "";
-    
-    if (!fullName || !email || !password || !phone) {
-      return res.status(HttpStatusCode.BAD_REQUEST).json({
-        message: "All fields are required",
-        success: false,
-      });
-    }
+    const profileImage = req.file
+      ? `/uploads/${req.file.filename}`
+      : "";
 
     const existingUser = await userModel.findOne({ email });
 
@@ -48,6 +54,9 @@ export const registerController = async (req, res) => {
       email,
       password: hashedPassword,
       phone,
+      age,
+      gender,
+      address,
       role,
       ProfileImage: profileImage,
     });
@@ -55,8 +64,19 @@ export const registerController = async (req, res) => {
     return res.status(HttpStatusCode.CREATED).json({
       message: "User registered successfully",
       success: true,
-      user: newUser,
+      user: {
+        _id: newUser._id,
+        fullName: newUser.fullName,
+        email: newUser.email,
+        phone: newUser.phone,
+        age: newUser.age,
+        gender: newUser.gender,
+        address: newUser.address,
+        role: newUser.role,
+        ProfileImage: newUser.ProfileImage,
+      },
     });
+
   } catch (error) {
     console.error("Register Error:", error);
 
@@ -67,36 +87,37 @@ export const registerController = async (req, res) => {
   }
 };
 
+
+
+
 export const loginController = async (req, res) => {
   try {
-    const { error } = loginSchema.validate(req.body);
+    const { error, value } = loginSchema.validate(req.body);
 
     if (error) {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
-        message: error.details[0].message,
+        message: error.details.map((detail) => detail.message),
         success: false,
       });
     }
 
-    const { email, password } = req.body;
+    const { email, password } = value;
 
-    if (!email || !password) {
-      return res.status(HttpStatusCode.BAD_REQUEST).json({
-        message: "Email and password are required",
-        success: false,
-      });
-    }
-
-    const user = await userModel.findOne({ email }).select("+password");
+    const user = await userModel
+      .findOne({ email })
+      .select("+password");
 
     if (!user) {
       return res.status(HttpStatusCode.NOT_FOUND).json({
-        message: "User not found. Please register first.",
+        message: "User not found.",
         success: false,
       });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      user.password
+    );
 
     if (!isPasswordCorrect) {
       return res.status(HttpStatusCode.UNAUTHORIZED).json({
@@ -114,10 +135,10 @@ export const loginController = async (req, res) => {
       process.env.JWT_SECRET,
       {
         expiresIn: "1d",
-      },
+      }
     );
-    res.cookie("token", token);
-    return res.status(HttpStatusCode.OK).json({
+
+    return res.status(HttpStatusCode.SUCCESS).json({
       message: "Login successful",
       success: true,
       token,
@@ -126,10 +147,14 @@ export const loginController = async (req, res) => {
         fullName: user.fullName,
         email: user.email,
         phone: user.phone,
+        age: user.age,
+        gender: user.gender,
+        address: user.address,
         role: user.role,
         profileImage: user.ProfileImage,
       },
     });
+
   } catch (error) {
     console.error("Login Error:", error);
 
@@ -140,17 +165,35 @@ export const loginController = async (req, res) => {
   }
 };
 
+
+
+
 export const logoutController = async (req, res) => {
   try {
-    const token=req.cookies?.token;
-    if(!token){
-      return res.status(HttpStatusCode.BAD_REQUEST).json({message:"Already logged out",success:false})
+    
+    const token = req.headers.authorization.split(" ")[1];
+
+
+    const decoded = jwt.decode(token);
+
+    if (!decoded || !decoded.exp) {
+      return res.status(401).json({
+        message: "Invalid token",
+        success: false,
+      });
     }
-    res.clearCookie("token")
-    return res.status(HttpStatusCode.OK).json({
+
+   
+    await tokenBlacklistModel.create({
+      token,
+      expiresAt: new Date(decoded.exp * 1000),
+    });
+
+    return res.status(HttpStatusCode.SUCCESS).json({
       message: "Logout successfully",
       success: true,
     });
+
   } catch (error) {
     console.error("Logout Error:", error);
 
@@ -160,4 +203,3 @@ export const logoutController = async (req, res) => {
     });
   }
 };
-

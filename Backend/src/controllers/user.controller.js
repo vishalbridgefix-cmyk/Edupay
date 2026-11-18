@@ -6,8 +6,6 @@ import {
 } from "../validations/user.validation.js";
 
 
-
-
 export const getProfileController = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -21,11 +19,24 @@ export const getProfileController = async (req, res) => {
       });
     }
 
-    return res.status(HttpStatusCode.OK).json({
+    return res.status(HttpStatusCode.SUCCESS).json({
       message: "Profile fetched successfully",
       success: true,
-      user,
+      user: {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        age: user.age,
+        gender: user.gender,
+        address: user.address,
+        role: user.role,
+        profileImage: user.ProfileImage,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
     });
+
   } catch (error) {
     console.error("Get Profile Error:", error);
 
@@ -36,20 +47,29 @@ export const getProfileController = async (req, res) => {
   }
 };
 
+
+
+
 export const updateProfileController = async (req, res) => {
   try {
-    const { error } = updateProfileSchema.validate(req.body);
+    const { error, value } = updateProfileSchema.validate(req.body);
 
     if (error) {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
-        message: error.details[0].message,
+        message: error.details.map((detail) => detail.message),
         success: false,
       });
     }
 
     const userId = req.user.userId;
 
-    const { fullName, phone, profileImage } = req.body;
+    const {
+      fullName,
+      phone,
+      age,
+      gender,
+      address,
+    } = value;
 
     const updateData = {};
 
@@ -61,13 +81,25 @@ export const updateProfileController = async (req, res) => {
       updateData.phone = phone;
     }
 
-    if (profileImage !== undefined) {
-      updateData.ProfileImage = profileImage;
+    if (age !== undefined) {
+      updateData.age = age;
+    }
+
+    if (gender !== undefined) {
+      updateData.gender = gender;
+    }
+
+    if (address !== undefined) {
+      updateData.address = address;
+    }
+
+    if (req.file) {
+      updateData.ProfileImage = `/uploads/${req.file.filename}`;
     }
 
     if (Object.keys(updateData).length === 0) {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
-        message: "Please provide at least one field to update",
+        message: " provide at least one field to update",
         success: false,
       });
     }
@@ -78,7 +110,7 @@ export const updateProfileController = async (req, res) => {
       {
         new: true,
         runValidators: true,
-      },
+      }
     );
 
     if (!updatedUser) {
@@ -88,11 +120,24 @@ export const updateProfileController = async (req, res) => {
       });
     }
 
-    return res.status(HttpStatusCode.OK).json({
+    return res.status(HttpStatusCode.SUCCESS).json({
       message: "Profile updated successfully",
       success: true,
-      user: updatedUser,
+      user: {
+        _id: updatedUser._id,
+        fullName: updatedUser.fullName,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+        age: updatedUser.age,
+        gender: updatedUser.gender,
+        address: updatedUser.address,
+        role: updatedUser.role,
+        profileImage: updatedUser.ProfileImage,
+        createdAt: updatedUser.createdAt,
+        updatedAt: updatedUser.updatedAt,
+      },
     });
+
   } catch (error) {
     console.error("Update Profile Error:", error);
 

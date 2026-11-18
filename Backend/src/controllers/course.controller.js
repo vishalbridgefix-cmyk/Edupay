@@ -1,42 +1,13 @@
-import Course from '../models/course.model.js'
-// Route for create course post route
-// /api/courses
+import Course from "../models/course.model.js";
+
+// Create Course
+// POST /api/courses
 
 const createCourse = async (req, res) => {
     try {
-        const {
-            title,
-            description,
-            thumbnail,
-            category,
-            difficultyLevel,
-            duration,
-            price,
-            requirements,
-            learningOutcomes,
-            lessons
-        } = req.body;
-
-        // Check required fields
-        if (!title || !description || !category) {
-            return res.status(400).json({
-                success: false,
-                message: "Title, description and category are required"
-            });
-        }
-
-        // Create new course
         const course = await Course.create({
-            title,
-            description,
-            thumbnail,
-            category,
-            difficultyLevel,
-            duration,
-            price,
-            requirements,
-            learningOutcomes,
-            lessons,
+            ...req.body,
+            instructor: req.user.id,
             status: "Draft"
         });
 
@@ -55,12 +26,11 @@ const createCourse = async (req, res) => {
 };
 
 
-//For checking instructor course is present or not get method
-// /api/courses/mine
+// Get Instructor's Own Courses
+// GET /api/courses/mine
 
 const getMyCourses = async (req, res) => {
     try {
-        //Authticate from middleware
         const instructorId = req.user?.id;
 
         if (!instructorId) {
@@ -70,7 +40,6 @@ const getMyCourses = async (req, res) => {
             });
         }
 
-        // Find courses created by instructor
         const courses = await Course.find({
             instructor: instructorId
         });
@@ -91,8 +60,8 @@ const getMyCourses = async (req, res) => {
 };
 
 
-// All course detail get route
-// /api/courses/:courseId
+// Get Course By ID
+// GET /api/courses/:courseId
 
 const getCourseById = async (req, res) => {
     try {
@@ -122,13 +91,12 @@ const getCourseById = async (req, res) => {
 };
 
 
-//Update course using id patch method
-// /api/courses/:courseId
+// Update Course
+// PATCH /api/courses/:courseId
 
 const updateCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
-
         const instructorId = req.user?.id;
 
         if (!instructorId) {
@@ -138,7 +106,6 @@ const updateCourse = async (req, res) => {
             });
         }
 
-        // Find and update only instructor's own course
         const course = await Course.findOneAndUpdate(
             {
                 _id: courseId,
@@ -175,13 +142,12 @@ const updateCourse = async (req, res) => {
 };
 
 
-//Delete course delete method
-// /api/courses/:courseId
+// Delete Course
+// DELETE /api/courses/:courseId
 
 const deleteCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
-
         const instructorId = req.user?.id;
 
         if (!instructorId) {
@@ -191,7 +157,6 @@ const deleteCourse = async (req, res) => {
             });
         }
 
-        // Delete only instructor's own course
         const course = await Course.findOneAndDelete({
             _id: courseId,
             instructor: instructorId
@@ -218,13 +183,12 @@ const deleteCourse = async (req, res) => {
 };
 
 
-//Publish route using patch method
-// /api/courses/:courseId/publish
+// Publish Course
+// PATCH /api/courses/:courseId/publish
 
 const publishCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
-
         const instructorId = req.user?.id;
 
         if (!instructorId) {
@@ -234,7 +198,6 @@ const publishCourse = async (req, res) => {
             });
         }
 
-        // Find instructor's own course
         const course = await Course.findOne({
             _id: courseId,
             instructor: instructorId
@@ -247,11 +210,14 @@ const publishCourse = async (req, res) => {
             });
         }
 
-        // Check required course details
+        // Business rule: required details must exist before publishing
         if (
             !course.title ||
             !course.description ||
-            !course.category
+            !course.category ||
+            !course.difficultyLevel ||
+            !course.duration ||
+            course.price == null
         ) {
             return res.status(400).json({
                 success: false,
@@ -259,7 +225,6 @@ const publishCourse = async (req, res) => {
             });
         }
 
-        // Change Draft status to Published
         course.status = "Published";
 
         await course.save();
@@ -279,7 +244,7 @@ const publishCourse = async (req, res) => {
 };
 
 
-// Export all the controller for using the routes
+// Export Controllers
 
 export {
     createCourse,

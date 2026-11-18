@@ -1,16 +1,15 @@
 import http from "http";
 import express from "express";
-
-import courseRoutes from "./routes/course.routes.js";
+import routes from "./routes/routeIndex.js";
 
 const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(express.urlencoded({extended : true}))
+app.use(express.urlencoded({ extended: true }));
 
-// Course Routes
-app.use("/api/courses", courseRoutes);
+// All API Routes
+app.use("/api", routes);
 
 // HTTP Server
 const server = http.createServer(app);

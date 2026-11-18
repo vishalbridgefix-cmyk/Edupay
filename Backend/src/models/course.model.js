@@ -44,16 +44,6 @@ const courseSchema = new mongoose.Schema(
             min: 0,
         },
 
-        requirements: {
-            type: [String],
-            default: [],
-        },
-
-        learningOutcomes: {
-            type: [String],
-            default: [],
-        },
-
         status: {
             type: String,
             enum: ["Draft", "Published"],

@@ -20,7 +20,7 @@ export const getProfile = async () => {
   return response.data;
 };
 
-export const updateProfile = async () => {
-  const response = await api.patch("/me");
+export const updateProfile = async (userData) => {
+  const response = await api.patch("/me", userData);
   return response.data;
 };

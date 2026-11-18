@@ -21,7 +21,7 @@ export const isAuthenticated = async (req, res, next) => {
 
     if (blacklistedToken) {
       return res.status(401).json({
-        message: "You are logged out. Please login again.",
+        message: "You are logged out",
         success: false,
       });
     }

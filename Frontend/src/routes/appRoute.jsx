@@ -1,7 +1,9 @@
 import { useRoutes,Navigate } from "react-router-dom";
 import MainLayout from "../layout/mainLayout";
+import InstructorLayout from "../layout/InstructorLayout";
+import AdminLayout from "../layout/AdminLayout";
 function AppRoutes() {
-  const isAuthenticate ='learner'
+  const isAuthenticate ='admin'
   console.log("set is"
     ,isAuthenticate
   )
@@ -11,7 +13,7 @@ function AppRoutes() {
       element: <h1>Login page </h1>,
     },
   {
-    path:"/learner/",
+    path:"/learner",
     element:isAuthenticate === 'learner' ?<MainLayout/>:<Navigate to ="/"/>,
     children : [{
       index:true,
@@ -21,15 +23,15 @@ function AppRoutes() {
 
   },
   {
-    path:"instuctor",
-    element:isAuthenticate==='instructor'?<MainLayout/>:<Navigate to ="/"/>,
+    path:"/instuctor",
+    element:isAuthenticate==='instructor'?<InstructorLayout/>:<Navigate to ="/"/>,
     children:[{
       path:"dashboard",
       element : <h1>dashboard page</h1>
     }]
   },
   {
-    path :"admin",
+    path :"/admin",
     element: isAuthenticate ==="admin"?<AdminLayout/>:<Navigate to ="/"/>,
     children:[{
       path :"dashboard",

@@ -1,12 +1,7 @@
-
 import express from "express";
-
 import * as courseController from "../controllers/course.controller.js";
-
 import { validateCourse } from "../validations/course.validation.js";
-
 import {authMiddleware, instructorMiddleware} from '../middleware/authMiddleware.js'
-
 import { validateUpdateCourse } from "../validations/course.validation.js";
 
 const router = express.Router();

@@ -55,7 +55,7 @@ export default function Login() {
       ...prevData,
       [name]: value,
     }));
-    
+
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: "",
@@ -187,7 +187,7 @@ export default function Login() {
                 New to EduPay?
                 <button
                   type="button"
-                  onClick={() => navigate("/auth/register")}
+                  onClick={() => navigate("/register")}
                   className="ml-2 font-bold text-violet-600 hover:text-violet-800"
                 >
                   Create an account

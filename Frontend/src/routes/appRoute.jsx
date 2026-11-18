@@ -8,11 +8,11 @@ function AppRoutes() {
   console.log("set is", isAuthenticate);
   const routes = useRoutes([
     {
-      path: "/auth/",
+      path: "/",
       element: <AuthLayout />,
       children: [
         {
-          path: "login",
+          index: true,
           element: <Login />,
         },
         {

@@ -55,8 +55,7 @@ export default function Login() {
       ...prevData,
       [name]: value,
     }));
-
-    // Clear the error when the user starts correcting the field
+    
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: "",

@@ -1,3 +1,5 @@
+
+import mongoose from "mongoose";
 import Course from "../models/course.model.js";
 
 // Create Course
@@ -5,9 +7,18 @@ import Course from "../models/course.model.js";
 
 const createCourse = async (req, res) => {
     try {
+        const instructorId = req.user?.userId;
+
+        if (!instructorId) {
+            return res.status(401).json({
+                success: false,
+                message: "Instructor ID not found in token"
+            });
+        }
+
         const course = await Course.create({
             ...req.body,
-            instructor: req.user.id,
+            instructor: instructorId,
             status: "Draft"
         });
 
@@ -18,7 +29,7 @@ const createCourse = async (req, res) => {
         });
 
     } catch (error) {
-        return res.status(500).json({
+        return res.status(400).json({
             success: false,
             message: error.message
         });
@@ -31,7 +42,7 @@ const createCourse = async (req, res) => {
 
 const getMyCourses = async (req, res) => {
     try {
-        const instructorId = req.user?.id;
+        const instructorId = req.user?.userId;
 
         if (!instructorId) {
             return res.status(401).json({
@@ -42,7 +53,7 @@ const getMyCourses = async (req, res) => {
 
         const courses = await Course.find({
             instructor: instructorId
-        });
+        }).sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
@@ -67,12 +78,22 @@ const getCourseById = async (req, res) => {
     try {
         const { courseId } = req.params;
 
-        const course = await Course.findById(courseId);
+        if (!mongoose.Types.ObjectId.isValid(courseId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid course ID"
+            });
+        }
+
+        const course = await Course.findOne({
+            _id: courseId,
+            status: "Published"
+        });
 
         if (!course) {
             return res.status(404).json({
                 success: false,
-                message: "Course not found"
+                message: "Published course not found"
             });
         }
 
@@ -97,12 +118,43 @@ const getCourseById = async (req, res) => {
 const updateCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
-        const instructorId = req.user?.id;
+        const instructorId = req.user?.userId;
 
         if (!instructorId) {
             return res.status(401).json({
                 success: false,
                 message: "Instructor authentication is required"
+            });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(courseId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid course ID"
+            });
+        }
+
+        const allowedFields = [
+            "title",
+            "description",
+            "category",
+            "difficultyLevel",
+            "duration",
+            "price"
+        ];
+
+        const updateData = {};
+
+        allowedFields.forEach((field) => {
+            if (req.body[field] !== undefined) {
+                updateData[field] = req.body[field];
+            }
+        });
+
+        if (Object.keys(updateData).length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "No valid fields provided for update"
             });
         }
 
@@ -112,7 +164,7 @@ const updateCourse = async (req, res) => {
                 instructor: instructorId
             },
             {
-                $set: req.body
+                $set: updateData
             },
             {
                 new: true,
@@ -134,7 +186,7 @@ const updateCourse = async (req, res) => {
         });
 
     } catch (error) {
-        return res.status(500).json({
+        return res.status(400).json({
             success: false,
             message: error.message
         });
@@ -148,12 +200,19 @@ const updateCourse = async (req, res) => {
 const deleteCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
-        const instructorId = req.user?.id;
+        const instructorId = req.user?.userId;
 
         if (!instructorId) {
             return res.status(401).json({
                 success: false,
                 message: "Instructor authentication is required"
+            });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(courseId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid course ID"
             });
         }
 
@@ -189,12 +248,19 @@ const deleteCourse = async (req, res) => {
 const publishCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
-        const instructorId = req.user?.id;
+        const instructorId = req.user?.userId;
 
         if (!instructorId) {
             return res.status(401).json({
                 success: false,
                 message: "Instructor authentication is required"
+            });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(courseId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid course ID"
             });
         }
 
@@ -236,7 +302,7 @@ const publishCourse = async (req, res) => {
         });
 
     } catch (error) {
-        return res.status(500).json({
+        return res.status(400).json({
             success: false,
             message: error.message
         });

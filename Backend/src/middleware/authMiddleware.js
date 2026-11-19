@@ -1,49 +1,53 @@
-
 import jwt from "jsonwebtoken";
 
-export const authMiddleware = async (req, res, next) => {
+// Authentication middleware
+export const isAuthenticated = (req, res, next) => {
   try {
-    // Get token from cookie
-    const token = req.cookies?.token;
+    const authHeader = req.headers.authorization;
 
-    if (!token) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
-        message: "Authentication token is required",
         success: false,
+        message: "Authentication token is required",
       });
     }
 
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const token = authHeader.split(" ")[1];
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    console.log("Decoded Token:", decoded);
 
     req.user = decoded;
 
     next();
+
   } catch (error) {
     return res.status(401).json({
-      message: "Invalid or expired token",
       success: false,
+      message: "Invalid or expired token",
     });
   }
 };
 
-// Check instructor role
+// Instructor role middleware
 export const instructorMiddleware = (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({
-      message: "Please login first",
       success: false,
+      message: "Please login first",
     });
   }
 
   if (req.user.role !== "instructor") {
     return res.status(403).json({
-      message: "Only instructors can manage courses",
       success: false,
+      message: "Only instructors can manage courses",
     });
   }
 
   next();
 };
-
-export const isAuthenticated = authMiddleware;

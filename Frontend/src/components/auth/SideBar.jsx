@@ -1,7 +1,5 @@
 import React from "react";
 
-import Feature from "./Feature.jsx";
-
 const SideBar = () => {
   return (
     <section className="hidden min-h-screen w-full flex-col bg-[#242044] px-7 py-8 text-white sm:px-10 lg:flex lg:px-14 lg:py-12">
@@ -27,15 +25,39 @@ const SideBar = () => {
       <div className="mt-7 rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-8">
         <h2 className="text-xl font-semibold">A platform built for progress</h2>
         <div className="mt-7 space-y-6">
-          <Feature number="01" title="Learn at your own pace">
-            Access courses, assignments and certificates.
-          </Feature>
-          <Feature number="02" title="Teach with confidence">
-            Create courses and track learner progress.
-          </Feature>
-          <Feature number="03" title="One connected platform">
-            Tools for every approved role.
-          </Feature>
+          <div className="flex gap-4">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-violet-400/30 text-xs font-bold text-violet-200">
+              01
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold">Learn at your own pace</h3>
+              <p className="mt-1 text-xs leading-5 text-violet-100/60">
+                Access courses, assignments and certificates.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-violet-400/30 text-xs font-bold text-violet-200">
+              02
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold">Teach with confidence</h3>
+              <p className="mt-1 text-xs leading-5 text-violet-100/60">
+                Create courses and track learner progress.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-violet-400/30 text-xs font-bold text-violet-200">
+              03
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold">One connected platform</h3>
+              <p className="mt-1 text-xs leading-5 text-violet-100/60">
+                Tools for every approved role.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 

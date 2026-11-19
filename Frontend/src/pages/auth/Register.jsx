@@ -1,6 +1,8 @@
-import "./auth.css";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import FormInput from "../../components/auth/FormInput";
+
+import { UserPlus } from "lucide-react";
 
 const roles = ["Learner", "Instructor", "Admin"];
 
@@ -132,10 +134,10 @@ const Register = () => {
 
     const registerData = {
       role,
-      fullName: formData.fullName.trim(),
-      email: formData.email.trim(),
-      phone: formData.phone.trim(),
-      password: formData.password,
+      fullName: formData?.fullName.trim(),
+      email: formData?.email.trim(),
+      phone: formData?.phone.trim(),
+      password: formData?.password,
       profileImage: profileImageRef.current,
     };
 
@@ -163,22 +165,7 @@ const Register = () => {
             <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-8 lg:p-9">
               <div className="mb-7">
                 <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="10" cy="7" r="4" />
-                    <line x1="20" y1="8" x2="20" y2="14" />
-                    <line x1="23" y1="11" x2="17" y2="11" />
-                  </svg>
+                  <UserPlus />
                 </div>
 
                 <h3 className="text-xl font-bold text-[#19182f] sm:text-2xl">
@@ -241,92 +228,36 @@ const Register = () => {
                   </h4>
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                    <div className="sm:col-span-2">
-                      <label
-                        htmlFor="fullName"
-                        className="mb-2 block text-sm font-semibold text-gray-700"
-                      >
-                        Full name
-                      </label>
+                    <FormInput
+                      label="Full name"
+                      name="fullName"
+                      type="text"
+                      placeholder="Enter your full name"
+                      value={formData.fullName}
+                      onChange={handleChange}
+                      error={errors.fullName}
+                      className="sm:col-span-2"
+                    />
 
-                      <input
-                        id="fullName"
-                        name="fullName"
-                        type="text"
-                        placeholder="Enter your full name"
-                        className={`auth-input ${
-                          errors.fullName
-                            ? "border-red-500 focus:border-red-500"
-                            : ""
-                        }`}
-                        value={formData.fullName}
-                        onChange={handleChange}
-                      />
+                    <FormInput
+                      label="Email address"
+                      name="email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={formData.email}
+                      onChange={handleChange}
+                      error={errors.email}
+                    />
 
-                      {errors.fullName && (
-                        <p className="mt-1 text-xs font-medium text-red-500">
-                          {errors.fullName}
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="email"
-                        className="mb-2 block text-sm font-semibold text-gray-700"
-                      >
-                        Email address
-                      </label>
-
-                      <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="you@example.com"
-                        className={`auth-input ${
-                          errors.email
-                            ? "border-red-500 focus:border-red-500"
-                            : ""
-                        }`}
-                        value={formData.email}
-                        onChange={handleChange}
-                      />
-
-                      {errors.email && (
-                        <p className="mt-1 text-xs font-medium text-red-500">
-                          {errors.email}
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="phone"
-                        className="mb-2 block text-sm font-semibold text-gray-700"
-                      >
-                        Phone number
-                      </label>
-
-                      <input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        placeholder="Enter phone number"
-                        className={`auth-input ${
-                          errors.phone
-                            ? "border-red-500 focus:border-red-500"
-                            : ""
-                        }`}
-                        value={formData.phone}
-                        onChange={handleChange}
-                      />
-
-                      {errors.phone && (
-                        <p className="mt-1 text-xs font-medium text-red-500">
-                          {errors.phone}
-                        </p>
-                      )}
-                    </div>
+                    <FormInput
+                      label="Phone number"
+                      name="phone"
+                      type="tel"
+                      placeholder="Enter phone number"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      error={errors.phone}
+                    />
                   </div>
                 </div>
 
@@ -385,72 +316,33 @@ const Register = () => {
                   </h4>
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                    <div>
-                      <label
-                        htmlFor="password"
-                        className="mb-2 block text-sm font-semibold text-gray-700"
-                      >
-                        Password
-                      </label>
-
-                      <div className="relative">
-                        <input
-                          id="password"
-                          name="password"
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Create password"
-                          className={`auth-input pr-16 ${
-                            errors.password
-                              ? "border-red-500 focus:border-red-500"
-                              : ""
-                          }`}
-                          value={formData.password}
-                          onChange={handleChange}
-                        />
-
+                    <FormInput
+                      label="Password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Create password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      error={errors.password}
+                      rightElement={
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute inset-y-0 right-3 text-xs font-bold text-violet-600"
+                          className="text-xs font-bold text-violet-600"
                         >
                           {showPassword ? "Hide" : "Show"}
                         </button>
-                      </div>
-
-                      {errors.password && (
-                        <p className="mt-1 text-xs font-medium text-red-500">
-                          {errors.password}
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="confirmPassword"
-                        className="mb-2 block text-sm font-semibold text-gray-700"
-                      >
-                        Confirm password
-                      </label>
-
-                      <input
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Confirm password"
-                        className={`auth-input ${
-                          errors.confirmPassword
-                            ? "border-red-500 focus:border-red-500"
-                            : ""
-                        }`}
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                      />
-
-                      {errors.confirmPassword && (
-                        <p className="mt-1 text-xs font-medium text-red-500">
-                          {errors.confirmPassword}
-                        </p>
-                      )}
-                    </div>
+                      }
+                    />
+                    <FormInput
+                      label="Confirm password"
+                      name="confirmPassword"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Confirm password"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      error={errors.confirmPassword}
+                    />
                   </div>
                 </div>
 

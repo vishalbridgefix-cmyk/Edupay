@@ -1,6 +1,7 @@
-import "./auth.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import FormInput from "../../components/auth/FormInput";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -41,8 +42,8 @@ export default function Login() {
     }
 
     const loginData = {
-      email: formData.email,
-      password: formData.password,
+      email: formData?.email,
+      password: formData?.password,
     };
 
     console.log("Login Data:", loginData);
@@ -91,71 +92,34 @@ export default function Login() {
                 noValidate
                 className="mt-7 space-y-5"
               >
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="mb-2 block text-sm font-semibold text-gray-700"
-                  >
-                    Email address
-                  </label>
+                <FormInput
+                  label="Email address"
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  error={errors.email}
+                />
 
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    className={`auth-input ${
-                      errors.email ? "border-red-500 focus:border-red-500" : ""
-                    }`}
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-
-                  {errors.email && (
-                    <p className="mt-1 text-xs font-medium text-red-500">
-                      {errors.email}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="mb-2 block text-sm font-semibold text-gray-700"
-                  >
-                    Password
-                  </label>
-
-                  <div className="relative">
-                    <input
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
-                      className={`auth-input pr-20 ${
-                        errors.password
-                          ? "border-red-500 focus:border-red-500"
-                          : ""
-                      }`}
-                      value={formData.password}
-                      onChange={handleChange}
-                    />
-
+                <FormInput
+                  label="Password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Create password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  error={errors.password}
+                  rightElement={
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-4 text-xs font-bold text-violet-600 hover:text-violet-800"
+                      className="text-xs font-bold text-violet-600"
                     >
                       {showPassword ? "Hide" : "Show"}
                     </button>
-                  </div>
-
-                  {errors.password && (
-                    <p className="mt-1 text-xs font-medium text-red-500">
-                      {errors.password}
-                    </p>
-                  )}
-                </div>
+                  }
+                />
 
                 <div className="flex items-center justify-between gap-3 text-xs text-gray-500">
                   <label className="flex cursor-pointer items-center gap-2">

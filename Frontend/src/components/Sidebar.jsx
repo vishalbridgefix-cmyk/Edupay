@@ -13,7 +13,7 @@ function Sidebar({ navigation, user }) {
     .toUpperCase();
 
   return (
-    <aside className="w-16 sm:w-56 lg:w-65 min-h-screen bg-[#f5f5f5] p-1.5 sm:p-3 shrink-0 transition-all">
+   <aside className="fixed  left-0 top-0 w-16 sm:w-56 lg:w-65 h-screen bg-[#f5f5f5] p-1.5 sm:p-3 shrink-0 transition-all">
       <div className="min-h-[calc(100vh-12px)] sm:min-h-[calc(100vh-24px)] bg-white rounded-xl sm:rounded-2xl flex flex-col px-2 sm:px-5">
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 py-5 sm:py-7 border-b border-gray-100">
@@ -51,10 +51,10 @@ function Sidebar({ navigation, user }) {
                 }
               >
                 <Icon size={17} strokeWidth={1.8} />
-                <span className="hidden sm:inline">{item.label}</span>
+                <span className="hidden sm:inline">{item.label} </span>
               </NavLink>
             );
-          })}
+          })}   
         </nav>
 
         <div className="border-t border-gray-100 py-5">

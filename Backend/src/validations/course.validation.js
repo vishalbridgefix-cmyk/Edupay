@@ -1,132 +1,176 @@
-  import Joi from "joi";
+import Joi from "joi";
+import { validationMessages } from "../constants/messages.js";
 
-  // Common Course Fields
-  const courseFields = {
-      title: Joi.string()
-          .trim()
-          .min(3)
-          .max(100)
-          .messages({
-              "string.empty": "Course title is required",
-              "string.min": "Course title must be at least 3 characters",
-              "string.max": "Course title cannot exceed 100 characters",
-          }),
+// Common Course Fields
+const courseFields = {
+    title: Joi.string()
+        .trim()
+        .min(3)
+        .max(100)
+        .messages({
+            "string.empty": validationMessages.COURSE_TITLE_REQUIRED,
+            "string.min": validationMessages.COURSE_TITLE_MIN,
+            "string.max": validationMessages.COURSE_TITLE_MAX,
+            "string.base": validationMessages.COURSE_TITLE_INVALID,
+        }),
 
-      description: Joi.string()
-          .trim()
-          .min(10)
-          .max(2000)
-          .messages({
-              "string.empty": "Course description is required",
-              "string.min": "Description must be at least 10 characters",
-              "string.max": "Description cannot exceed 2000 characters",
-          }),
+    description: Joi.string()
+        .trim()
+        .min(10)
+        .max(2000)
+        .messages({
+            "string.empty": validationMessages.COURSE_DESCRIPTION_REQUIRED,
+            "string.min": validationMessages.COURSE_DESCRIPTION_MIN,
+            "string.max": validationMessages.COURSE_DESCRIPTION_MAX,
+            "string.base": validationMessages.COURSE_DESCRIPTION_INVALID,
+        }),
 
-      thumbnail: Joi.string().allow(""),
+    thumbnail: Joi.string()
+        .allow("")
+        .messages({
+            "string.base": validationMessages.THUMBNAIL_INVALID,
+        }),
 
-      category: Joi.string()
-          .trim()
-          .min(1)
-          .messages({
-              "string.empty": "Course category is required",
-          }),
+    category: Joi.string()
+        .trim()
+        .min(1)
+        .messages({
+            "string.empty": validationMessages.COURSE_CATEGORY_REQUIRED,
+            "string.base": validationMessages.COURSE_CATEGORY_INVALID,
+        }),
 
-      difficultyLevel: Joi.string()
-          .valid("Beginner", "Intermediate", "Advanced")
-          .messages({
-              "any.only": "Difficulty must be Beginner, Intermediate, or Advanced",
-          }),
+    difficultyLevel: Joi.string()
+        .valid("Beginner", "Intermediate", "Advanced")
+        .messages({
+            "any.only": validationMessages.DIFFICULTY_INVALID,
+            "string.base": validationMessages.VALUE_INVALID,
+        }),
 
-      duration: Joi.number()
-          .positive()
-          .messages({
-              "number.base": "Duration must be a number",
-              "number.positive": "Duration must be greater than zero",
-          }),
+    duration: Joi.number()
+        .positive()
+        .messages({
+            "number.base": validationMessages.DURATION_INVALID,
+            "number.positive": validationMessages.DURATION_POSITIVE,
+        }),
 
-      price: Joi.number()
-          .min(0)
-          .messages({
-              "number.base": "Price must be a number",
-              "number.min": "Price cannot be negative",
-          }),
+    price: Joi.number()
+        .min(0)
+        .messages({
+            "number.base": validationMessages.PRICE_INVALID,
+            "number.min": validationMessages.PRICE_NEGATIVE,
+        }),
 
-      requirements: Joi.array()
-          .items(Joi.string().trim()),
+    requirements: Joi.array()
+        .items(
+            Joi.string().trim().messages({
+                "string.base": validationMessages.REQUIREMENT_ITEM_INVALID,
+            })
+        )
+        .messages({
+            "array.base": validationMessages.REQUIREMENTS_INVALID,
+        }),
 
-      learningOutcomes: Joi.array()
-          .items(Joi.string().trim()),
+    learningOutcomes: Joi.array()
+        .items(
+            Joi.string().trim().messages({
+                "string.base": validationMessages.LEARNING_OUTCOME_ITEM_INVALID,
+            })
+        )
+        .messages({
+            "array.base": validationMessages.LEARNING_OUTCOMES_INVALID,
+        }),
 
-      lessons: Joi.array()
-          .items(Joi.string().hex().length(24)),
+    lessons: Joi.array()
+        .items(
+            Joi.string().hex().length(24).messages({
+                "string.hex": validationMessages.LESSON_ID_INVALID,
+                "string.length": validationMessages.LESSON_ID_INVALID,
+                "string.base": validationMessages.LESSON_ID_INVALID,
+            })
+        )
+        .messages({
+            "array.base": validationMessages.LESSONS_INVALID,
+        }),
 
-      status: Joi.string()
-          .valid("Draft", "Published"),
-  };
+    status: Joi.string()
+        .valid("Draft", "Published")
+        .messages({
+            "any.only": validationMessages.STATUS_INVALID,
+        }),
+};
 
-  // Create Course Schema
-  const courseSchema = Joi.object({
-      ...courseFields,
 
-      title: courseFields.title.required().messages({
-          "any.required": "Course title is required",
-      }),
-
-      description: courseFields.description.required().messages({
-          "any.required": "Course description is required",
-      }),
-
-      category: courseFields.category.required().messages({
-          "any.required": "Course category is required",
-      }),
-
-      difficultyLevel: courseFields.difficultyLevel.required().messages({
-          "any.required": "Difficulty level is required",
-      }),
-
-      duration: courseFields.duration.required().messages({
-          "any.required": "Course duration is required",
-      }),
-
-      price: courseFields.price.required().messages({
-          "any.required": "Course price is required",
-      }),
-
-      status: Joi.forbidden(),
-  });
-
-  // Update Course Schema
-  const updateCourseSchema = Joi.object({
+// Create Course Schema
+const courseSchema = Joi.object({
     ...courseFields,
-    status: Joi.forbidden()
-  })
-      .min(1)
-      .messages({
-          "object.min": "At least one field is required for update",
-      });
 
-  // Validation Middleware
-  const validateData = (schema) => {
-      return (req, res, next) => {
-          const { error, value } = schema.validate(req.body, {
-              abortEarly: false,
-              stripUnknown: true,
-          });
+    title: courseFields.title.required().messages({
+        "any.required": validationMessages.COURSE_TITLE_REQUIRED,
+    }),
 
-          if (error) {
-              return res.status(400).json({
-                  success: false,
-                  message: "Course validation failed",
-                  errors: error.details.map((detail) => detail.message),
-              });
-          }
+    description: courseFields.description.required().messages({
+        "any.required": validationMessages.COURSE_DESCRIPTION_REQUIRED,
+    }),
 
-          req.body = value;
-          next();
-      };
-  };
+    category: courseFields.category.required().messages({
+        "any.required": validationMessages.COURSE_CATEGORY_REQUIRED,
+    }),
 
-  // Export Middlewares
-  export const validateCourse = validateData(courseSchema);
+    difficultyLevel: courseFields.difficultyLevel.required().messages({
+        "any.required": validationMessages.DIFFICULTY_REQUIRED,
+    }),
 
-  export const validateUpdateCourse = validateData(updateCourseSchema);
+    duration: courseFields.duration.required().messages({
+        "any.required": validationMessages.DURATION_REQUIRED,
+    }),
+
+    price: courseFields.price.required().messages({
+        "any.required": validationMessages.PRICE_REQUIRED,
+    }),
+
+    status: Joi.forbidden().messages({
+        "any.unknown": validationMessages.STATUS_NOT_ALLOWED,
+    }),
+});
+
+
+// Update Course Schema
+const updateCourseSchema = Joi.object({
+    ...courseFields,
+
+    status: Joi.forbidden().messages({
+        "any.unknown": validationMessages.STATUS_NOT_ALLOWED,
+    }),
+})
+    .min(1)
+    .messages({
+        "object.min": validationMessages.UPDATE_FIELD_REQUIRED,
+    });
+
+
+// Validation Middleware
+const validateData = (schema) => {
+    return (req, res, next) => {
+        const { error, value } = schema.validate(req.body, {
+            abortEarly: false,
+            stripUnknown: true,
+        });
+
+        if (error) {
+            return res.status(400).json({
+                success: false,
+                message: validationMessages.COURSE_VALIDATION_FAILED,
+                errors: error.details.map((detail) => detail.message),
+            });
+        }
+
+        req.body = value;
+        next();
+    };
+};
+
+
+// Export Middlewares
+export const validateCourse = validateData(courseSchema);
+
+export const validateUpdateCourse = validateData(updateCourseSchema);

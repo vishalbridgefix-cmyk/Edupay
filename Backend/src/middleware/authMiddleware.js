@@ -2,8 +2,9 @@
 import jwt from "jsonwebtoken";
 import tokenBlacklistModel from "../models/tokenBlacklist.model.js";
 import { HttpStatusCode } from "../constants/httpStatus.js";
+import { Messages } from "../constants/messages.js";
 
-// Authentication middleware
+// Authentication Middleware
 export const isAuthenticated = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -11,7 +12,7 @@ export const isAuthenticated = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(HttpStatusCode.UNAUTHORIZED).json({
         success: false,
-        message: "Authentication token is required",
+        message: Messages.AUTH_TOKEN_REQUIRED,
       });
     }
 
@@ -25,7 +26,7 @@ export const isAuthenticated = async (req, res, next) => {
     if (blacklistedToken) {
       return res.status(HttpStatusCode.UNAUTHORIZED).json({
         success: false,
-        message: "You are logged out",
+        message: Messages.USER_LOGGED_OUT,
       });
     }
 
@@ -44,24 +45,25 @@ export const isAuthenticated = async (req, res, next) => {
   } catch (error) {
     return res.status(HttpStatusCode.UNAUTHORIZED).json({
       success: false,
-      message: "Invalid or expired token",
+      message: Messages.INVALID_OR_EXPIRED_TOKEN,
     });
   }
 };
 
-// Instructor role middleware
+
+// Instructor Role Middleware
 export const instructorMiddleware = (req, res, next) => {
   if (!req.user) {
     return res.status(HttpStatusCode.UNAUTHORIZED).json({
       success: false,
-      message: "Please login first",
+      message: Messages.LOGIN_REQUIRED,
     });
   }
 
   if (req.user.role !== "instructor") {
     return res.status(HttpStatusCode.FORBIDDEN).json({
       success: false,
-      message: "Only instructors can manage courses",
+      message: Messages.INSTRUCTOR_ONLY,
     });
   }
 

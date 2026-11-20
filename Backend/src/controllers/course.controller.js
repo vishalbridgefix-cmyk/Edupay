@@ -1,11 +1,9 @@
-
 import mongoose from "mongoose";
 import Course from "../models/course.model.js";
 import { HttpStatusCode } from "../constants/httpStatus.js";
+import { Messages } from "../constants/messages.js";
 
 // Create Course
-// POST /api/courses
-
 const createCourse = async (req, res) => {
     try {
         const instructorId = req.user?.userId;
@@ -13,7 +11,7 @@ const createCourse = async (req, res) => {
         if (!instructorId) {
             return res.status(HttpStatusCode.UNAUTHORIZED).json({
                 success: false,
-                message: "Instructor ID not found in token"
+                message: Messages.INSTRUCTOR_ID_NOT_FOUND
             });
         }
 
@@ -25,7 +23,7 @@ const createCourse = async (req, res) => {
 
         return res.status(HttpStatusCode.CREATED).json({
             success: true,
-            message: "Course created successfully",
+            message: Messages.COURSE_CREATED,
             data: course
         });
 
@@ -39,8 +37,6 @@ const createCourse = async (req, res) => {
 
 
 // Get Instructor's Own Courses
-// GET /api/courses/mine
-
 const getMyCourses = async (req, res) => {
     try {
         const instructorId = req.user?.userId;
@@ -48,7 +44,7 @@ const getMyCourses = async (req, res) => {
         if (!instructorId) {
             return res.status(HttpStatusCode.UNAUTHORIZED).json({
                 success: false,
-                message: "Instructor authentication is required"
+                message: Messages.INSTRUCTOR_AUTH_REQUIRED
             });
         }
 
@@ -58,7 +54,7 @@ const getMyCourses = async (req, res) => {
 
         return res.status(HttpStatusCode.SUCCESS).json({
             success: true,
-            message: "Instructor courses fetched successfully",
+            message: Messages.INSTRUCTOR_COURSES_FETCHED,
             count: courses.length,
             data: courses
         });
@@ -73,8 +69,6 @@ const getMyCourses = async (req, res) => {
 
 
 // Get Course By ID
-// GET /api/courses/:courseId
-
 const getCourseById = async (req, res) => {
     try {
         const { courseId } = req.params;
@@ -82,7 +76,7 @@ const getCourseById = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(courseId)) {
             return res.status(HttpStatusCode.BAD_REQUEST).json({
                 success: false,
-                message: "Invalid course ID"
+                message: Messages.INVALID_COURSE_ID
             });
         }
 
@@ -92,15 +86,15 @@ const getCourseById = async (req, res) => {
         });
 
         if (!course) {
-            return res.status(HttpStatusCode.BAD_REQUEST).json({
+            return res.status(HttpStatusCode.NOT_FOUND).json({
                 success: false,
-                message: "Published course not found"
+                message: Messages.PUBLISHED_COURSE_NOT_FOUND
             });
         }
 
         return res.status(HttpStatusCode.SUCCESS).json({
             success: true,
-            message: "Course details fetched successfully",
+            message: Messages.COURSE_DETAILS_FETCHED,
             data: course
         });
 
@@ -114,8 +108,6 @@ const getCourseById = async (req, res) => {
 
 
 // Update Course
-// PATCH /api/courses/:courseId
-
 const updateCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
@@ -124,14 +116,14 @@ const updateCourse = async (req, res) => {
         if (!instructorId) {
             return res.status(HttpStatusCode.UNAUTHORIZED).json({
                 success: false,
-                message: "Instructor authentication is required"
+                message: Messages.INSTRUCTOR_AUTH_REQUIRED
             });
         }
 
         if (!mongoose.Types.ObjectId.isValid(courseId)) {
             return res.status(HttpStatusCode.BAD_REQUEST).json({
                 success: false,
-                message: "Invalid course ID"
+                message: Messages.INVALID_COURSE_ID
             });
         }
 
@@ -155,7 +147,7 @@ const updateCourse = async (req, res) => {
         if (Object.keys(updateData).length === 0) {
             return res.status(HttpStatusCode.BAD_REQUEST).json({
                 success: false,
-                message: "No valid fields provided for update"
+                message: Messages.NO_VALID_FIELDS
             });
         }
 
@@ -174,15 +166,15 @@ const updateCourse = async (req, res) => {
         );
 
         if (!course) {
-            return res.status(HttpStatusCode.BAD_REQUEST).json({
+            return res.status(HttpStatusCode.NOT_FOUND).json({
                 success: false,
-                message: "Course not found or you are not authorized"
+                message: Messages.COURSE_NOT_FOUND_OR_UNAUTHORIZED
             });
         }
 
         return res.status(HttpStatusCode.SUCCESS).json({
             success: true,
-            message: "Course updated successfully",
+            message: Messages.COURSE_UPDATED,
             data: course
         });
 
@@ -196,8 +188,6 @@ const updateCourse = async (req, res) => {
 
 
 // Delete Course
-// DELETE /api/courses/:courseId
-
 const deleteCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
@@ -206,14 +196,14 @@ const deleteCourse = async (req, res) => {
         if (!instructorId) {
             return res.status(HttpStatusCode.UNAUTHORIZED).json({
                 success: false,
-                message: "Instructor authentication is required"
+                message: Messages.INSTRUCTOR_AUTH_REQUIRED
             });
         }
 
         if (!mongoose.Types.ObjectId.isValid(courseId)) {
             return res.status(HttpStatusCode.BAD_REQUEST).json({
                 success: false,
-                message: "Invalid course ID"
+                message: Messages.INVALID_COURSE_ID
             });
         }
 
@@ -223,15 +213,15 @@ const deleteCourse = async (req, res) => {
         });
 
         if (!course) {
-            return res.status(HttpStatusCode.BAD_REQUEST).json({
+            return res.status(HttpStatusCode.NOT_FOUND).json({
                 success: false,
-                message: "Course not found or you are not authorized"
+                message: Messages.COURSE_NOT_FOUND_OR_UNAUTHORIZED
             });
         }
 
         return res.status(HttpStatusCode.SUCCESS).json({
             success: true,
-            message: "Course deleted successfully"
+            message: Messages.COURSE_DELETED
         });
 
     } catch (error) {
@@ -244,8 +234,6 @@ const deleteCourse = async (req, res) => {
 
 
 // Publish Course
-// PATCH /api/courses/:courseId/publish
-
 const publishCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
@@ -254,14 +242,14 @@ const publishCourse = async (req, res) => {
         if (!instructorId) {
             return res.status(HttpStatusCode.UNAUTHORIZED).json({
                 success: false,
-                message: "Instructor authentication is required"
+                message: Messages.INSTRUCTOR_AUTH_REQUIRED
             });
         }
 
         if (!mongoose.Types.ObjectId.isValid(courseId)) {
             return res.status(HttpStatusCode.BAD_REQUEST).json({
                 success: false,
-                message: "Invalid course ID"
+                message: Messages.INVALID_COURSE_ID
             });
         }
 
@@ -271,13 +259,12 @@ const publishCourse = async (req, res) => {
         });
 
         if (!course) {
-            return res.status(HttpStatusCode.BAD_REQUEST).json({
+            return res.status(HttpStatusCode.NOT_FOUND).json({
                 success: false,
-                message: "Course not found or you are not authorized"
+                message: Messages.COURSE_NOT_FOUND_OR_UNAUTHORIZED
             });
         }
 
-        // Business rule: required details must exist before publishing
         if (
             !course.title ||
             !course.description ||
@@ -288,7 +275,7 @@ const publishCourse = async (req, res) => {
         ) {
             return res.status(HttpStatusCode.BAD_REQUEST).json({
                 success: false,
-                message: "Complete course details before publishing"
+                message: Messages.COMPLETE_COURSE_DETAILS
             });
         }
 
@@ -298,7 +285,7 @@ const publishCourse = async (req, res) => {
 
         return res.status(HttpStatusCode.SUCCESS).json({
             success: true,
-            message: "Course published successfully",
+            message: Messages.COURSE_PUBLISHED,
             data: course
         });
 
@@ -312,7 +299,6 @@ const publishCourse = async (req, res) => {
 
 
 // Export Controllers
-
 export {
     createCourse,
     getMyCourses,

@@ -1,15 +1,68 @@
 import InstructorDashboard from "../pages/instructor/instructorDashboard";
 import { useRoutes,Navigate } from "react-router-dom";
 import MainLayout from "../layout/mainLayout";
-import InstructorLayout from "../layout/InstructorLayout";
-import AdminLayout from "../layout/AdminLayout";
+import MyCourses from "../pages/instructor/MyCourses";
+import CourseBuilder from "../pages/instructor/CourseBuilder";
+
 function AppRoutes() {
-  const isAuthenticate ='instructor'
-  console.log("set is",isAuthenticate)
+  const isAuthenticate = "instructor";
+
+  console.log("set is", isAuthenticate);
+
   const routes = useRoutes([
     {
       path: "/",
-      element: <h1>Login page </h1>,
+      element: <h1>Login page</h1>,
+    },
+    {
+      path: "/learner",
+      element: isAuthenticate === "learner" ? (
+        <MainLayout role="learner" />
+      ) : (
+        <Navigate to="/" />
+      ),
+      children: [
+        {
+          path: "dashboard",
+          element: <h1>Dashboard Page</h1>,
+        },
+      ],
+    },
+    {
+      path: "/instructor",
+      element: isAuthenticate === "instructor" ? (
+        <MainLayout role="instructor" />
+      ) : (
+        <Navigate to="/" />
+      ),
+      children: [
+        {
+          path: "dashboard",
+          element: <h1>Dashboard Page</h1>,
+        },
+        {
+          path: "my-courses",
+          element: <MyCourses />,
+        },
+        {
+          path: "course-builder",
+          element: <CourseBuilder />,
+        },
+      ],
+    },
+    {
+      path: "/admin",
+      element: isAuthenticate === "admin" ? (
+        <MainLayout role="admin" />
+      ) : (
+        <Navigate to="/" />
+      ),
+      children: [
+        {
+          path: "dashboard",
+          element: <h1>Dashboard Page</h1>,
+        },
+      ],
     },
   {
     path:"/learner",
@@ -44,4 +97,3 @@ function AppRoutes() {
 }
 
 export default AppRoutes;
-  

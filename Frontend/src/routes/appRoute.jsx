@@ -1,12 +1,11 @@
+import InstructorDashboard from "../pages/instructor/instructorDashboard";
 import { useRoutes,Navigate } from "react-router-dom";
 import MainLayout from "../layout/mainLayout";
 import InstructorLayout from "../layout/InstructorLayout";
 import AdminLayout from "../layout/AdminLayout";
 function AppRoutes() {
-  const isAuthenticate ='admin'
-  console.log("set is"
-    ,isAuthenticate
-  )
+  const isAuthenticate ='instructor'
+  console.log("set is",isAuthenticate)
   const routes = useRoutes([
     {
       path: "/",
@@ -23,11 +22,11 @@ function AppRoutes() {
 
   },
   {
-    path:"/instuctor",
+    path:"instructor",
     element:isAuthenticate==='instructor'?<InstructorLayout/>:<Navigate to ="/"/>,
     children:[{
       path:"dashboard",
-      element : <h1>dashboard page</h1>
+      element : <InstructorDashboard />
     }]
   },
   {

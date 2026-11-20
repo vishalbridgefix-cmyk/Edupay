@@ -1,4 +1,3 @@
-
 import { Outlet } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -12,8 +11,8 @@ import {
   Settings,
 } from "lucide-react";
 
-import Sidebar from "../component/Sidebar";
-import Navbar from "../component/Navbar";
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 
 const instructorNavigation = {
   roleLabel: "TEACH",

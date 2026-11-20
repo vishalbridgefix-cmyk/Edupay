@@ -1,11 +1,10 @@
 import { Outlet } from "react-router-dom";
 
 function MainLayout(){
-    return(
-        <>
-        <h1>Admin Layout</h1>
-        <Outlet/>
-        </>
-    )
+    return (
+        <main className="h-screen w-full overflow-hidden bg-[#F7F7FC]">
+            <Outlet />
+        </main>
+    );
 }
 export default MainLayout;

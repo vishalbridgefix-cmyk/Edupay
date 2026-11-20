@@ -10,8 +10,8 @@ import {
   Settings,
 } from "lucide-react";
 
-import Sidebar from "../component/Sidebar";
-import Navbar from "../component/Navbar";
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 
 const adminNavigation = {
   roleLabel: "ADMIN",

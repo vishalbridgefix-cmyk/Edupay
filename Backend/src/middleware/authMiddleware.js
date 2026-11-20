@@ -1,6 +1,7 @@
 
 import jwt from "jsonwebtoken";
 import tokenBlacklistModel from "../models/tokenBlacklist.model.js";
+import { HttpStatusCode } from "../constants/httpStatus.js";
 
 // Authentication middleware
 export const isAuthenticated = async (req, res, next) => {
@@ -8,7 +9,7 @@ export const isAuthenticated = async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({
+      return res.status(HttpStatusCode.UNAUTHORIZED).json({
         success: false,
         message: "Authentication token is required",
       });
@@ -22,7 +23,7 @@ export const isAuthenticated = async (req, res, next) => {
     });
 
     if (blacklistedToken) {
-      return res.status(401).json({
+      return res.status(HttpStatusCode.UNAUTHORIZED).json({
         success: false,
         message: "You are logged out",
       });
@@ -41,7 +42,7 @@ export const isAuthenticated = async (req, res, next) => {
     next();
 
   } catch (error) {
-    return res.status(401).json({
+    return res.status(HttpStatusCode.UNAUTHORIZED).json({
       success: false,
       message: "Invalid or expired token",
     });
@@ -51,14 +52,14 @@ export const isAuthenticated = async (req, res, next) => {
 // Instructor role middleware
 export const instructorMiddleware = (req, res, next) => {
   if (!req.user) {
-    return res.status(401).json({
+    return res.status(HttpStatusCode.UNAUTHORIZED).json({
       success: false,
       message: "Please login first",
     });
   }
 
   if (req.user.role !== "instructor") {
-    return res.status(403).json({
+    return res.status(HttpStatusCode.FORBIDDEN).json({
       success: false,
       message: "Only instructors can manage courses",
     });

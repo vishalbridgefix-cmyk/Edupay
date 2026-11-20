@@ -1,27 +1,5 @@
-function RecentActivity() {
-  const activities = [
-    {
-      title: "New enrollment - React Pro",
-      time: "2 min ago",
-      color: "bg-green-500",
-    },
-    {
-      title: "New review - UX Foundations",
-      time: "1 hour ago",
-      color: "bg-orange-500",
-    },
-    {
-      title: "Assignment submitted - Alex M.",
-      time: "3 hours ago",
-      color: "bg-violet-500",
-    },
-    {
-      title: "Course completed - Jamie R.",
-      time: "Yesterday",
-      color: "bg-blue-500",
-    },
-  ];
 
+function RecentActivity({ activities }) {
   return (
     <div className="bg-white rounded-xl border border-gray-100 p-5">
       <h2 className="text-sm font-semibold text-gray-800">
@@ -29,7 +7,7 @@ function RecentActivity() {
       </h2>
 
       <p className="text-[11px] text-gray-400 mt-1">
-        Latest learner interactions
+        Latest learner interactions 
       </p>
 
       <div className="mt-4">
@@ -57,5 +35,4 @@ function RecentActivity() {
     </div>
   );
 }
-
 export default RecentActivity;

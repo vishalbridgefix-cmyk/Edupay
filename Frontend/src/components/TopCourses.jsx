@@ -1,28 +1,5 @@
-function TopCourses() {
-  const courses = [
-    {
-      name: "React.js: From Zero to Production",
-      enrollments: "1,240",
-      rating: "4.9 / 5",
-      completion: "82%",
-      revenue: "$4,560",
-    },
-    {
-      name: "Product Design Fundamentals",
-      enrollments: "860",
-      rating: "4.8 / 5",
-      completion: "76%",
-      revenue: "$3,440",
-    },
-    {
-      name: "Node.js Backend Mastery",
-      enrollments: "740",
-      rating: "4.9 / 5",
-      completion: "71%",
-      revenue: "$2,980",
-    },
-  ];
 
+function TopCourses({ courses }) {
   return (
     <div className="bg-white rounded-xl border border-gray-100 p-5">
       <h2 className="text-sm font-semibold text-gray-800">
@@ -80,3 +57,4 @@ function TopCourses() {
 }
 
 export default TopCourses;
+  

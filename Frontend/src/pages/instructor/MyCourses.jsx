@@ -113,7 +113,7 @@ function MyCourses() {
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 min-h-[420px] p-4 sm:p-5">
+      <div className="bg-white rounded-xl border border-gray-100 min-h-105 p-4 sm:p-5">
         <div className="mb-4">
           <h2 className="text-sm font-semibold text-gray-800">
             Course library
@@ -124,7 +124,7 @@ function MyCourses() {
         </div>
 
         <div className="w-full overflow-x-auto">
-          <table className="w-full min-w-[700px] text-left">
+          <table className="w-full min-w-175 text-left">
             <thead>
               <tr className="border-b border-gray-100 text-[10px] uppercase text-gray-400">
                 <th className="py-3 font-medium">Course title</th>

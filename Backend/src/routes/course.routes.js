@@ -23,7 +23,7 @@ router.post(
 
 // Get Instructor's Own Courses
 router.get(
-  "/mine",
+  "/getCourses",
   isAuthenticated,
   instructorMiddleware,
   courseController.getMyCourses

@@ -8,7 +8,7 @@ const router = express.Router();
 
 //Course route
 
-router.use("/courses", courseRoutes);
+router.use("instructor/courses", courseRoutes);
 router.use("/users", userRoutes);
 router.use("/auth",authRoutes)
 

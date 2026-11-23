@@ -1,5 +1,5 @@
-import { useRoutes, Navigate } from "react-router-dom";
 
+import { useRoutes,Navigate } from "react-router-dom";
 import MainLayout from "../layout/mainLayout";
 import AuthLayout from "../layout/AuthLayout";
 
@@ -8,7 +8,7 @@ import Register from "../pages/auth/Register";
 
 import MyCourses from "../pages/instructor/MyCourses";
 import CourseBuilder from "../pages/instructor/CourseBuilder";
-
+import Dashboard from "../pages/instructor/Dashboard";
 function AppRoutes() {
   const isAuthenticate = "learner";
 
@@ -60,7 +60,7 @@ function AppRoutes() {
       children: [
         {
           path: "dashboard",
-          element: <h1>Dashboard Page</h1>,
+          element: <Dashboard/>,
         },
         {
           path: "my-courses",
@@ -89,9 +89,8 @@ function AppRoutes() {
         },
       ],
     },
+    
   ]);
-
-  return routes;
+return routes;
 }
-
 export default AppRoutes;

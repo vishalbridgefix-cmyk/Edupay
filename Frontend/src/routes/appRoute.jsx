@@ -4,7 +4,7 @@ import MyCourses from "../pages/instructor/MyCourses";
 import CourseBuilder from "../pages/instructor/CourseBuilder";
 
 function AppRoutes() {
-  const isAuthenticate = "instructor";
+    const isAuthenticate = "instructor";
 
   console.log("set is", isAuthenticate);
 

@@ -63,36 +63,10 @@ export const updateProfileController = async (req, res) => {
 
     const userId = req.user.userId;
 
-    const {
-      fullName,
-      phone,
-      age,
-      gender,
-      address,
-    } = value;
+    
 
-    const updateData = {};
-
-    if (fullName !== undefined) {
-      updateData.fullName = fullName;
-    }
-
-    if (phone !== undefined) {
-      updateData.phone = phone;
-    }
-
-    if (age !== undefined) {
-      updateData.age = age;
-    }
-
-    if (gender !== undefined) {
-      updateData.gender = gender;
-    }
-
-    if (address !== undefined) {
-      updateData.address = address;
-    }
-
+    const updateData = {...value};
+    
     if (req.file) {
       updateData.ProfileImage = `/uploads/${req.file.filename}`;
     }

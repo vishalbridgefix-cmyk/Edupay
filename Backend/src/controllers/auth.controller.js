@@ -16,12 +16,14 @@ export const registerController = async (req, res) => {
   try {
     const { error, value } = registerSchema.validate(req.body);
 
-    if (error) {
-      return res.status(HttpStatusCode.BAD_REQUEST).json({
-        message: error.details[0].message,
-        success: false,
-      });
-    }
+   if (error) {
+  const errorMessages = error.details.map((detail) => detail.message);
+
+  return res.status(HttpStatusCode.BAD_REQUEST).json({
+    message: errorMessages.join(", "),
+    success: false,
+  });
+}
 
     const {
       fullName,

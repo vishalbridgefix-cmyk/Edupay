@@ -5,6 +5,7 @@ export const Messages = Object.freeze({
   UPDATED: "Resource updated successfully",
   DELETED: "Resource deleted successfully",
   FETCHED: "Data fetched successfully",
+  ALL_COURSES_FETCHED: "All published courses fetched successfully",
 
   // Authentication Messages
   LOGIN_SUCCESS: "Login successful",

@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 import Course from "../models/course.model.js";
 import { HttpStatusCode } from "../constants/httpStatus.js";
@@ -68,11 +69,36 @@ const getMyCourses = async (req, res) => {
 };
 
 
+// Get All Published Courses
+const getAllCourses = async (req, res) => {
+    try {
+        const courses = await Course.find({
+            status: "Published"
+        })
+        .sort({ createdAt: -1 });
+
+        return res.status(HttpStatusCode.SUCCESS).json({
+            success: true,
+            message: Messages.ALL_COURSES_FETCHED,
+            count: courses.length,
+            data: courses
+        });
+
+    } catch (error) {
+        return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+
 // Get Course By ID
 const getCourseById = async (req, res) => {
     try {
         const { courseId } = req.params;
 
+        // Validate Course ID
         if (!mongoose.Types.ObjectId.isValid(courseId)) {
             return res.status(HttpStatusCode.BAD_REQUEST).json({
                 success: false,
@@ -80,15 +106,13 @@ const getCourseById = async (req, res) => {
             });
         }
 
-        const course = await Course.findOne({
-            _id: courseId,
-            status: "Published"
-        });
+        // Find Course By ID
+        const course = await Course.findById(courseId);
 
         if (!course) {
             return res.status(HttpStatusCode.NOT_FOUND).json({
                 success: false,
-                message: Messages.PUBLISHED_COURSE_NOT_FOUND
+                message: Messages.COURSE_NOT_FOUND
             });
         }
 
@@ -302,6 +326,7 @@ const publishCourse = async (req, res) => {
 export {
     createCourse,
     getMyCourses,
+    getAllCourses,
     getCourseById,
     updateCourse,
     deleteCourse,

@@ -113,4 +113,31 @@ export const validationMessages = Object.freeze({
   FIELD_REQUIRED: "This field is required",
   VALUE_INVALID: "Invalid value provided",
   COURSE_VALIDATION_FAILED: "Course validation failed",
+
+      LESSON_TITLE_REQUIRED: "Lesson title is required",
+    LESSON_TITLE_MIN: "Lesson title must be at least 3 characters",
+    LESSON_TITLE_MAX: "Lesson title cannot exceed 100 characters",
+    LESSON_CONTENT_TYPE_REQUIRED: "Lesson content type is required",
+    LESSON_CONTENT_TYPE_INVALID: "Content type must be video, article, slides or resources",
+    LESSON_DURATION_INVALID: "Lesson duration must be a non-negative number",
+    LESSON_ORDER_INVALID: "Lesson order must be a positive integer",
+    LESSON_URL_INVALID: "Please provide a valid URL",
+    LESSON_RESOURCE_NAME_REQUIRED: "Resource name is required",
+    LESSON_RESOURCE_URL_REQUIRED: "Resource URL is required",
+
+    // Success Messages
+    LESSON_CREATED: "Lesson created successfully",
+    LESSON_FETCHED: "Lessons fetched successfully",
+    LESSON_UPDATED: "Lesson updated successfully",
+    LESSON_DELETED: "Lesson deleted successfully",
+
+    // Error Messages
+    LESSON_NOT_FOUND: "Lesson not found",
+    LESSON_CREATION_FAILED: "Failed to create lesson",
+    LESSON_FETCH_FAILED: "Failed to fetch lessons",
+    LESSON_UPDATE_FAILED: "Failed to update lesson",
+    LESSON_DELETE_FAILED: "Failed to delete lesson",
+    LESSON_MODULE_REQUIRED: "Module ID is required",
+    LESSON_MODULE_NOT_FOUND: "Module not found",
+    LESSON_UNAUTHORIZED: "You are not authorized to modify this lesson",
 });

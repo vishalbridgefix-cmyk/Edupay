@@ -1,7 +1,13 @@
 import mongoose from "mongoose";
 
-const lessonSchema = new mongoose.Schema(
+const moduleSchema = new mongoose.Schema(
     {
+        courseId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Course",
+            required: true,
+        },
+
         title: {
             type: String,
             required: true,
@@ -14,17 +20,6 @@ const lessonSchema = new mongoose.Schema(
             trim: true,
         },
 
-        videoUrl: {
-            type: String,
-            default: "",
-        },
-
-        duration: {
-            type: Number,
-            default: 0,
-            min: 0,
-        },
-
         order: {
             type: Number,
             default: 1,
@@ -34,6 +29,8 @@ const lessonSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-const Lesson = mongoose.model("Lesson", lessonSchema);
+moduleSchema.index({ courseId: 1, order: 1 });
+        
+const Module = mongoose.model("Module", moduleSchema);
 
-export default Lesson;
+export default Module;

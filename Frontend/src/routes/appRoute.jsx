@@ -10,7 +10,7 @@ import MyCourses from "../pages/instructor/MyCourses";
 import CourseBuilder from "../pages/instructor/CourseBuilder";
 import Dashboard from "../pages/instructor/Dashboard";
 function AppRoutes() {
-  const isAuthenticate = "learner";
+  const isAuthenticate = "instructor";
 
   console.log("set is", isAuthenticate);
 

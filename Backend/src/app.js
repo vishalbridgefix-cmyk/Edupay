@@ -7,7 +7,7 @@ import morgan from "morgan"
 
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js"
-
+import uploadRoutes from "./routes/upload.routes.js"
 const app = express();
 
 app.use("./uploads", express.static(path.join(import.meta.dirname, "..", "uploads")));
@@ -21,6 +21,7 @@ app.use("/uploads", express.static("uploads"));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/upload", uploadRoutes);
 
 const server = http.createServer(app);
 

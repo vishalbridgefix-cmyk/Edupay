@@ -6,7 +6,7 @@ export const uploadImage = async (req, res) => {
 
   try {
 
-    
+    // Check whether image is received
     if (!req.file) {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
         success: false,

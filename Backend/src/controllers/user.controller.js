@@ -1,5 +1,6 @@
 
 import { HttpStatusCode } from "../constants/httpStatus.js";
+import { Messages } from "../constants/messages.js";
 import userModel from "../models/user.model.js";
 import {
   updateProfileSchema,
@@ -14,13 +15,13 @@ export const getProfileController = async (req, res) => {
 
     if (!user) {
       return res.status(HttpStatusCode.NOT_FOUND).json({
-        message: "User not found",
+        message: Messages.NOT_FOUND,
         success: false,
       });
     }
 
     return res.status(HttpStatusCode.SUCCESS).json({
-      message: "Profile fetched successfully",
+      message: Messages.USER_FETCHED,
       success: true,
       user: {
         _id: user._id,
@@ -89,13 +90,13 @@ export const updateProfileController = async (req, res) => {
 
     if (!updatedUser) {
       return res.status(HttpStatusCode.NOT_FOUND).json({
-        message: "User not found",
+        message: Messages.NOT_FOUND,
         success: false,
       });
     }
 
     return res.status(HttpStatusCode.SUCCESS).json({
-      message: "Profile updated successfully",
+      message: Messages.USER_UPDATED,
       success: true,
       user: {
         _id: updatedUser._id,

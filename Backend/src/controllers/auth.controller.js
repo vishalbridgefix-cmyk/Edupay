@@ -9,6 +9,7 @@ import {
   registerSchema,
   loginSchema
 } from "../validations/user.validation.js";
+import { Messages } from "../constants/messages.js";
 
 
 export const registerController = async (req, res) => {
@@ -43,7 +44,7 @@ export const registerController = async (req, res) => {
 
     if (existingUser) {
       return res.status(HttpStatusCode.CONFLICT).json({
-        message: "User with this email already exists",
+        message: Messages.ALREADY_EXISTS,
         success: false,
       });
     }
@@ -72,7 +73,7 @@ export const registerController = async (req, res) => {
 
     return res.status(HttpStatusCode.CREATED).json({
 
-      message: "User registered successfully",
+      message: Messages.REGISTER_SUCCESS,
 
       success: true,
 
@@ -125,7 +126,7 @@ export const loginController = async (req, res) => {
 
     if (!user) {
       return res.status(HttpStatusCode.NOT_FOUND).json({
-        message: "User not found.",
+        message: Messages.NOT_FOUND,
         success: false,
       });
     }
@@ -137,7 +138,7 @@ export const loginController = async (req, res) => {
 
     if (!isPasswordCorrect) {
       return res.status(HttpStatusCode.UNAUTHORIZED).json({
-        message: "Invalid email or password",
+        message: Messages.INVALID_CREDENTIALS,
         success: false,
       });
     }
@@ -156,7 +157,7 @@ export const loginController = async (req, res) => {
 
     return res.status(HttpStatusCode.SUCCESS).json({
 
-      message: "Login successful",
+      message: Messages.LOGIN_SUCCESS,
 
       success: true,
 
@@ -200,7 +201,7 @@ export const logoutController = async (req, res) => {
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(HttpStatusCode.UNAUTHORIZED).json({
-        message: "Authentication token is required",
+        message: Messages.AUTH_TOKEN_REQUIRED,
         success: false,
       });
     }
@@ -218,7 +219,7 @@ export const logoutController = async (req, res) => {
     });
 
     return res.status(HttpStatusCode.SUCCESS).json({
-      message: "Logout successfully",
+      message: Messages.LOGOUT_SUCCESS,
       success: true,
     });
 

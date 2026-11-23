@@ -28,6 +28,7 @@ export const Messages = Object.freeze({
   ALREADY_EXISTS: "Resource already exists",
   DUPLICATE_ENTRY: "Duplicate entry found",
 
+
   // Course Messages
   COURSE_CREATED: "Course created successfully",
   COURSE_UPDATED: "Course updated successfully",
@@ -51,6 +52,11 @@ LOGIN_REQUIRED: "Please login first",
 
 // Authorization Messages
 INSTRUCTOR_ONLY: "Only instructors can manage courses",
+
+//User Messages
+
+USER_FETCHED:"User Fetched successFully",
+USER_UPDATED:"User Updated SuccesFully"
 });
 
 // Joi Validation Messages

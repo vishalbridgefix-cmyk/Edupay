@@ -35,7 +35,6 @@ const instructorNavigation = {
     { label: "Dashboard", path: "/instructor/dashboard", icon: LayoutDashboard },
     { label: "My courses", path: "/instructor/my-courses", icon: BookOpen },
     { label: "Course builder", path: "/instructor/course-builder", icon: PenTool },
-    { label: "Curriculum", path: "/instructor/curriculum", icon: BookOpen },
     { label: "Learners", path: "/instructor/learners", icon: Users },
     { label: "Assignments", path: "/instructor/assignments", icon: ClipboardList },
     { label: "Earnings", path: "/instructor/earnings", icon: DollarSign },

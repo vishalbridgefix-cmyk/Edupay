@@ -1,5 +1,10 @@
 
-export const tabs = ["All courses", "Published", "Drafts", "Archived"];
+export const tabs = [
+  "All courses",
+  "Published",
+  "Drafts",
+  "Archived",
+];
 
 export const courses = [
   {
@@ -59,3 +64,117 @@ export const courses = [
     updated: "Oct 20, 2026",
   },
 ];
+
+const getSavedCourses = () =>
+  JSON.parse(localStorage.getItem("edupay_courses") || "[]");
+
+export const getAllCourses = () => {
+  const savedCourses = getSavedCourses();
+
+  const deletedIds = JSON.parse(
+    localStorage.getItem("edupay_deleted_courses") || "[]"
+  );
+
+  const courseMap = new Map(
+    courses.map((course) => [course.id, course])
+  );
+
+  savedCourses.forEach((course) => {
+    courseMap.set(course.id, course);
+  });
+
+  return [...courseMap.values()].filter(
+    (course) => !deletedIds.includes(course.id)
+  );
+};
+
+export const saveCourse = (course, status) => {
+  const savedCourses = getSavedCourses();
+
+  const newCourse = {
+    ...course,
+    id: Date.now(),
+    status,
+    learners: "—",
+    rating: "—",
+    updated: new Date().toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    }),
+  };
+
+  localStorage.setItem(
+    "edupay_courses",
+    JSON.stringify([...savedCourses, newCourse])
+  );
+
+  return newCourse;
+};
+
+export const updateCourse = (courseId, course, status) => {
+  const allCourses = getAllCourses();
+
+  const existingCourse = allCourses.find(
+    (item) => item.id === courseId
+  );
+
+  if (!existingCourse) return;
+
+  const updatedCourse = {
+    ...existingCourse,
+    ...course,
+    id: courseId,
+    status,
+    updated: new Date().toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    }),
+  };
+
+  const savedCourses = getSavedCourses();
+
+  const courseExists = savedCourses.some(
+    (item) => item.id === courseId
+  );
+
+  const updatedCourses = courseExists
+    ? savedCourses.map((item) =>
+        item.id === courseId ? updatedCourse : item
+      )
+    : [...savedCourses, updatedCourse];
+
+  localStorage.setItem(
+    "edupay_courses",
+    JSON.stringify(updatedCourses)
+  );
+
+  return updatedCourse;
+};
+
+export const deleteCourse = (courseId) => {
+  const savedCourses = getSavedCourses();
+
+  localStorage.setItem(
+    "edupay_courses",
+    JSON.stringify(
+      savedCourses.filter((course) => course.id !== courseId)
+    )
+  );
+
+  const deletedIds = JSON.parse(
+    localStorage.getItem("edupay_deleted_courses") || "[]"
+  );
+
+  if (!deletedIds.includes(courseId)) {
+    deletedIds.push(courseId);
+  }
+
+  localStorage.setItem(
+    "edupay_deleted_courses",
+    JSON.stringify(deletedIds)
+  );
+
+  return getAllCourses();
+};

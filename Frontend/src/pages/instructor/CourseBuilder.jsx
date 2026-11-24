@@ -341,7 +341,7 @@ function CourseBuilder() {
                 Learning outcomes
               </h2>
 
-              <div className="bg-white rounded-xl border border-gray-100 p-5 min-h-[300px]">
+              <div className="bg-white rounded-xl border border-gray-100 p-5 min-h-300px">
                 <div className="space-y-5 mt-6">
                   {learningOutcomes.map((item) => (
                     <div key={item} className="flex items-center gap-3">

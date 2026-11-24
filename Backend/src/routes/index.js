@@ -3,8 +3,8 @@ import express from "express";
 import courseRoutes from "./course.routes.js";
 import userRoutes from "./user.routes.js"
 import authRoutes from "./auth.routes.js"
-import uploadRoutes from './upload.routes.js'
-
+import uploadRoutes from "./upload.routes.js"
+import learnerDashboardRoutes from "./learnerDashboard.routes.js" 
 
 const router = express.Router();
 
@@ -13,7 +13,7 @@ const router = express.Router();
 router.use("/instructor/courses", courseRoutes);
 router.use("/users", userRoutes);
 router.use("/auth",authRoutes)
-router.use("/api/upload", uploadRoutes);
-
+router.use("/upload", uploadRoutes);
+router.use("/learner/dashboard", learnerDashboardRoutes);
 
 export default router;

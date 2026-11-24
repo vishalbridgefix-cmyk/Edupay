@@ -38,24 +38,50 @@ export const Messages = Object.freeze({
   COURSE_PUBLISHED: "Course published successfully",
   COURSE_UNPUBLISHED: "Course unpublished successfully",
 
+  // Extra Course Messages
+  INVALID_COURSE_ID: "Invalid course id",
+  COURSE_NOT_FOUND_OR_UNAUTHORIZED:
+    "Course not found or you are not authorized to access it",
+  INSTRUCTOR_COURSES_FETCHED: "Instructor courses fetched successfully",
+  COURSE_DETAILS_FETCHED: "Course details fetched successfully",
+  COMPLETE_COURSE_DETAILS:
+    "Please complete all required course details before publishing",
+
+  // Instructor / Auth Messages
+  INSTRUCTOR_AUTH_REQUIRED: "Instructor authentication is required",
+  INSTRUCTOR_ID_NOT_FOUND: "Instructor id not found",
+
   // Server Messages
   INTERNAL_SERVER_ERROR: "Internal server error",
   DATABASE_ERROR: "Database operation failed",
   SOMETHING_WENT_WRONG: "Something went wrong",
 
   // Authentication Middleware Messages
-AUTH_TOKEN_REQUIRED: "Authentication token is required",
-USER_LOGGED_OUT: "You are logged out",
-INVALID_OR_EXPIRED_TOKEN: "Invalid or expired token",
-LOGIN_REQUIRED: "Please login first",
+  AUTH_TOKEN_REQUIRED: "Authentication token is required",
+  USER_LOGGED_OUT: "You are logged out",
+  INVALID_OR_EXPIRED_TOKEN: "Invalid or expired token",
+  LOGIN_REQUIRED: "Please login first",
 
-// Authorization Messages
-INSTRUCTOR_ONLY: "Only instructors can manage courses",
+  // Authorization Messages
+  INSTRUCTOR_ONLY: "Only instructors can manage courses",
+
+  // Module Messages
+  MODULE_TITLE_REQUIRED: "Module title is required",
+  MODULE_CREATED: "Module created successfully",
+  MODULES_FETCHED: "Modules fetched successfully",
+  INVALID_MODULE_ID: "Invalid module id",
+  INVALID_MODULE_ORDER: "Order must be a positive integer",
+  MODULE_NOT_FOUND: "Module not found",
+  MODULE_UPDATED: "Module updated successfully",
+  MODULE_DELETED: "Module deleted successfully",
+  COURSE_VIEW_FORBIDDEN: "You are not allowed to view this course",
+
+  // Common
+  NO_VALID_FIELDS: "No valid fields provided to update",
 });
 
 // Joi Validation Messages
 export const validationMessages = Object.freeze({
-
   // Course Title
   COURSE_TITLE_REQUIRED: "Course title is required",
   COURSE_TITLE_MIN: "Course title must be at least 3 characters",
@@ -99,7 +125,8 @@ export const validationMessages = Object.freeze({
 
   // Lessons
   LESSONS_INVALID: "Lessons must be an array",
-  LESSON_ID_INVALID: "Each lesson ID must be a valid 24-character MongoDB ObjectId",
+  LESSON_ID_INVALID:
+    "Each lesson ID must be a valid 24-character MongoDB ObjectId",
 
   // Status
   STATUS_INVALID: "Status must be Draft or Published",
@@ -107,6 +134,28 @@ export const validationMessages = Object.freeze({
 
   // Update Course
   UPDATE_FIELD_REQUIRED: "At least one field is required for update",
+
+  // Module Title
+  MODULE_TITLE_REQUIRED: "Module title is required",
+  MODULE_TITLE_MIN: "Module title must be at least 3 characters",
+  MODULE_TITLE_MAX: "Module title cannot exceed 120 characters",
+  MODULE_TITLE_INVALID: "Module title must be a string",
+
+  // Module Description
+  MODULE_DESCRIPTION_MAX: "Module description cannot exceed 500 characters",
+  MODULE_DESCRIPTION_INVALID: "Module description must be a string",
+
+  // Module Order
+  MODULE_ORDER_INVALID: "Module order must be a number",
+  MODULE_ORDER_INTEGER: "Module order must be a whole number",
+  MODULE_ORDER_MIN: "Module order must be at least 1",
+  MODULE_ORDER_NOT_ALLOWED:
+    "You cannot provide module order while creating a module",
+
+  // General Module Validation
+  MODULE_UPDATE_FIELD_REQUIRED:
+    "At least one field is required to update the module",
+  MODULE_VALIDATION_FAILED: "Module validation failed",
 
   // General Joi Validation
   FIELD_NOT_ALLOWED: "This field is not allowed",

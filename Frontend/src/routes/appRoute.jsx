@@ -9,6 +9,10 @@ import Register from "../pages/auth/Register";
 import MyCourses from "../pages/instructor/MyCourses";
 import CourseBuilder from "../pages/instructor/CourseBuilder";
 import Dashboard from "../pages/instructor/Dashboard";
+import LearnerDashboard from "../pages/learner/Dashboard";
+
+
+
 function AppRoutes() {
   const isAuthenticate = "learner";
 
@@ -33,20 +37,48 @@ function AppRoutes() {
 
     // Learner Routes
     {
-      path: "/learner",
-      element:
-        isAuthenticate === "learner" ? (
-          <MainLayout role="learner" />
-        ) : (
-          <Navigate to="/" replace />
-        ),
-      children: [
-        {
-          path: "dashboard",
-          element: <h1>Dashboard Page</h1>,
-        },
-      ],
+  path: "/learner",
+  element:
+    isAuthenticate === "learner" ? (
+      <MainLayout role="learner" />
+    ) : (
+      <Navigate to="/" replace />
+    ),
+  children: [
+    {
+      path: "dashboard",
+      element:<LearnerDashboard/>,
     },
+    {
+      path: "explore-courses",
+      element: <h1>Coming Soon ....</h1>,
+    },
+    {
+      path: "my-learning",
+      element: <h1>Coming Soon .....</h1>,
+    },
+    {
+      path: "assignments",
+      element: <h1>Coming Soon ....</h1>,
+    },
+    {
+      path: "schedule",
+      element: <h1>Coming Soon ....</h1>,
+    },
+    {
+      path: "messages",
+      element: <h1>Coming Soon ....</h1>,
+    },
+    {
+      path: "certificates",
+      element: <h1>Coming Soon ....</h1>,
+    },
+    {
+      path: "settings",
+      element: <h1>Coming Soon ....</h1>,
+    },
+  ],
+},
 
     // Instructor Routes
     {

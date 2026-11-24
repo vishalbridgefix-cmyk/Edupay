@@ -11,6 +11,11 @@ import {
   Mail,
   PenTool,
   ChartNoAxesColumn,
+  Compass,
+  GraduationCap,
+  CalendarDays,
+  MessageCircle,
+  Award,
 } from "lucide-react";
 
 const adminNavigation = {
@@ -44,14 +49,25 @@ const instructorNavigation = {
   ],
 };
 
-export function getNavigation(role) {
-  if (role === "admin") {
-    return adminNavigation;
-  }
+const learnerNavigation = {
+  roleLabel: "LEARN",
+  sectionLabel: "LEARNER WORKSPACE",
+  menu: [
+    { label: "Dashboard", path: "/learner/dashboard", icon: LayoutDashboard },
+    { label: "Explore Courses", path: "/learner/explore-courses", icon: Compass },
+    { label: "My Learning", path: "/learner/my-learning", icon: GraduationCap },
+    { label: "Assignments", path: "/learner/assignments", icon: ClipboardList },
+    { label: "Schedule", path: "/learner/schedule", icon: CalendarDays },
+    { label: "Messages", path: "/learner/messages", icon: MessageCircle },
+    { label: "Certificates", path: "/learner/certificates", icon: Award },
+    { label: "Settings", path: "/learner/settings", icon: Settings },
+  ],
+};
 
-  if (role === "instructor") {
-    return instructorNavigation;
-  }
+export function getNavigation(role) {
+  if (role === "admin") return adminNavigation;
+  if (role === "instructor") return instructorNavigation;
+  if (role === "learner") return learnerNavigation;
 
   return {
     roleLabel: "",

@@ -69,3 +69,24 @@ export const instructorMiddleware = (req, res, next) => {
 
   next();
 };
+
+
+
+// Learner Role Middleware
+export const learnerMiddleware = (req, res, next) => {
+  if (!req.user) {
+    return res.status(HttpStatusCode.UNAUTHORIZED).json({
+      success: false,
+      message: Messages.LOGIN_REQUIRED,
+    });
+  }
+
+  if (req.user.role !== "learner") {
+    return res.status(HttpStatusCode.FORBIDDEN).json({
+      success: false,
+      message: "Only learners can access learner dashboard APIs",
+    });
+  }
+
+  next();
+};

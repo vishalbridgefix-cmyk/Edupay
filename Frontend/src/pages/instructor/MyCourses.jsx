@@ -1,72 +1,14 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, MoreHorizontal } from "lucide-react";
+import { Plus, MoreHorizontal, BookOpen } from "lucide-react";
+import { tabs, courses } from "../../helper/coursesData";
 
 function MyCourses() {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("All courses");
-
-  const tabs = ["All courses", "Published", "Drafts", "Archived"];
-
-  const courses = [
-    {
-      id: 1,
-      title: "React.js: From Zero to Production",
-      status: "Published",
-      learners: "1,240",
-      rating: "4.9",
-      updated: "Nov 15, 2026",
-    },
-    {
-      id: 2,
-      title: "Product Design Fundamentals",
-      status: "Published",
-      learners: "860",
-      rating: "4.8",
-      updated: "Nov 12, 2026",
-    },
-    {
-      id: 3,
-      title: "Node.js Backend Mastery",
-      status: "Published",
-      learners: "730",
-      rating: "4.9",
-      updated: "Nov 10, 2026",
-    },
-    {
-      id: 4,
-      title: "Advanced TypeScript",
-      status: "Draft",
-      learners: "—",
-      rating: "—",
-      updated: "Nov 08, 2026",
-    },
-    {
-      id: 5,
-      title: "Design Systems Workshop",
-      status: "Review",
-      learners: "—",
-      rating: "—",
-      updated: "Nov 04, 2026",
-    },
-    {
-      id: 6,
-      title: "Python for Beginners",
-      status: "Published",
-      learners: "510",
-      rating: "4.7",
-      updated: "Oct 28, 2026",
-    },
-    {
-      id: 7,
-      title: "HTML and CSS Basics",
-      status: "Archived",
-      learners: "120",
-      rating: "4.5",
-      updated: "Oct 20, 2026",
-    },
-  ];
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   const filteredCourses =
     activeTab === "All courses"
@@ -75,6 +17,14 @@ function MyCourses() {
           course.status ===
           (activeTab === "Drafts" ? "Draft" : activeTab)
         );
+
+  const openCurriculum = (course) => {
+    navigate("/instructor/curriculum", {
+      state: { selectedCourse: course },
+    });
+
+    setOpenMenuId(null);
+  };
 
   return (
     <div className="w-full">
@@ -144,7 +94,7 @@ function MyCourses() {
                     className="border-b border-gray-100 last:border-0"
                   >
                     <td className="py-4 pr-4 text-xs font-semibold text-gray-700">
-                      {course.title}    
+                      {course.title}
                     </td>
 
                     <td className="py-4">
@@ -175,20 +125,40 @@ function MyCourses() {
                       {course.updated}
                     </td>
 
-                    <td className="py-4 text-center">
+                    <td className="py-4 text-center relative">
                       <button
                         type="button"
                         aria-label={`Actions for ${course.title}`}
+                        onClick={() =>
+                          setOpenMenuId(
+                            openMenuId === course.id ? null : course.id
+                          )
+                        }
                         className="text-gray-500 hover:text-violet-600"
                       >
                         <MoreHorizontal size={17} />
                       </button>
+
+                      {openMenuId === course.id && (
+                        <div className="absolute right-4 top-12 z-20 w-48 bg-white border border-gray-100 rounded-lg shadow-lg py-2 text-left">
+                          <button
+                            onClick={() => openCurriculum(course)}
+                            className="w-full flex items-center gap-2 px-4 py-3 text-xs text-gray-700 hover:bg-violet-50 hover:text-violet-600"
+                          >
+                            <BookOpen size={15} />
+                            Manage curriculum
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="py-12 text-center text-xs text-gray-400">
+                  <td
+                    colSpan="6"
+                    className="py-12 text-center text-xs text-gray-400"
+                  >
                     No courses found.
                   </td>
                 </tr>

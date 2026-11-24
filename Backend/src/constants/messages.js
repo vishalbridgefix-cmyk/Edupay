@@ -28,7 +28,6 @@ export const Messages = Object.freeze({
   ALREADY_EXISTS: "Resource already exists",
   DUPLICATE_ENTRY: "Duplicate entry found",
 
-
   // Course Messages
   COURSE_CREATED: "Course created successfully",
   COURSE_UPDATED: "Course updated successfully",

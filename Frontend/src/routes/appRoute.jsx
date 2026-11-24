@@ -1,5 +1,4 @@
-
-import { useRoutes,Navigate } from "react-router-dom";
+import { useRoutes, Navigate } from "react-router-dom";
 import MainLayout from "../layout/mainLayout";
 import AuthLayout from "../layout/AuthLayout";
 
@@ -9,8 +8,9 @@ import Register from "../pages/auth/Register";
 import MyCourses from "../pages/instructor/MyCourses";
 import CourseBuilder from "../pages/instructor/CourseBuilder";
 import Dashboard from "../pages/instructor/Dashboard";
+import Curriculum from "../pages/instructor/Curriculum";
 function AppRoutes() {
-  const isAuthenticate = "learner";
+  const isAuthenticate = "instructor";
 
   console.log("set is", isAuthenticate);
 
@@ -31,7 +31,6 @@ function AppRoutes() {
       ],
     },
 
-    // Learner Routes
     {
       path: "/learner",
       element:
@@ -48,7 +47,6 @@ function AppRoutes() {
       ],
     },
 
-    // Instructor Routes
     {
       path: "/instructor",
       element:
@@ -60,7 +58,7 @@ function AppRoutes() {
       children: [
         {
           path: "dashboard",
-          element: <Dashboard/>,
+          element: <Dashboard />,
         },
         {
           path: "my-courses",
@@ -70,10 +68,13 @@ function AppRoutes() {
           path: "course-builder",
           element: <CourseBuilder />,
         },
+        {
+          path: "curriculum",
+          element: <Curriculum />,
+        },
       ],
     },
 
-    // Admin Routes
     {
       path: "/admin",
       element:
@@ -89,8 +90,7 @@ function AppRoutes() {
         },
       ],
     },
-    
   ]);
-return routes;
+  return routes;
 }
 export default AppRoutes;

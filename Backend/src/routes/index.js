@@ -9,7 +9,6 @@ import uploadRoutes from './upload.routes.js'
 
 const router = express.Router();
 
-//Course route
 
 router.use("/auth", authRoutes);
 router.use("/users", userRoutes);

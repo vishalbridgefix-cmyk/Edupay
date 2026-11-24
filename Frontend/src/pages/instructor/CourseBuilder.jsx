@@ -6,9 +6,8 @@ import { ImagePlus, Check, Eye, CircleAlert } from "lucide-react";
 import {
   saveCourse,
   updateCourse,
-} from "../../helper/coursesData";
-
-import { curriculumData } from "../../helper/curriculumData";
+} from "../../helper/instructor/coursesData";
+// import { curriculumData } from "../../helper/curriculumData";
 
 import {
   learningOutcomes,
@@ -17,7 +16,7 @@ import {
   enrollmentOptions,
   initialVisibility,
   initialEnrollment,
-} from "../../helper/courseBuilderData";
+} from "../../helper/instructor/courseBuilderData";
 
 const cloneData = (data) => JSON.parse(JSON.stringify(data));
 
@@ -210,7 +209,6 @@ function CourseBuilder() {
         </p>
       </div>
 
-      {/* Steps */}
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setStep(1)}
@@ -242,7 +240,6 @@ function CourseBuilder() {
         </button>
       </div>
 
-      {/* Step 1: Course Details */}
       {step === 1 && (
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
           <div className="xl:col-span-2 bg-white rounded-xl border border-gray-100 p-5 sm:p-6">
@@ -285,7 +282,6 @@ function CourseBuilder() {
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex justify-between gap-3 mt-7 pt-5 border-t border-gray-100">
               <button
                 onClick={() => handleSave("Draft")}
@@ -303,7 +299,6 @@ function CourseBuilder() {
             </div>
           </div>
 
-          {/* Thumbnail and Learning Outcomes */}
           <div className="space-y-5">
             <div className="bg-white rounded-xl border border-gray-100 p-5">
               <h2 className="font-semibold text-sm">
@@ -366,7 +361,6 @@ function CourseBuilder() {
         </div>
       )}
 
-      {/* Step 3: Preview and Publish */}
       {step === 2 && (
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
           <div className="xl:col-span-2 bg-white rounded-xl border border-gray-100 p-5 sm:p-6 space-y-6">
@@ -448,7 +442,6 @@ function CourseBuilder() {
             </div>
           </div>
 
-          {/* Publish Checklist and Options */}
           <div className="space-y-5">
             <div className="bg-white border border-gray-100 rounded-xl p-5">
               <h2 className="font-semibold text-sm">

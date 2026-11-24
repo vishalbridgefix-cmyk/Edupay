@@ -13,7 +13,7 @@ import {
   tabs,
   getAllCourses,
   deleteCourse,
-} from "../../helper/coursesData";
+} from "../../helper/instructor/coursesData";
 
 function MyCourses() {
   const navigate = useNavigate();
@@ -98,7 +98,6 @@ function MyCourses() {
         </button>
       </div>
 
-      {/* Course Tabs */}
       <div className="flex flex-wrap gap-2 mb-4">
         {tabs.map((tab) => (
           <button
@@ -115,7 +114,6 @@ function MyCourses() {
         ))}
       </div>
 
-      {/* Course Table */}
       <div className="bg-white rounded-xl border border-gray-100 min-h-105 p-4 sm:p-5">
         <div className="mb-4">
           <h2 className="text-sm font-semibold text-gray-800">
@@ -200,7 +198,7 @@ function MyCourses() {
 
                       {openMenuId === course.id && (
                         <div className="absolute right-4 top-12 z-20 w-48 bg-white border border-gray-100 rounded-lg shadow-lg py-2 text-left">
-                          {/* Edit Course */}
+                        
                           <button
                             onClick={() => handleEditCourse(course)}
                             className="w-full flex items-center gap-2 px-4 py-3 text-xs text-gray-700 hover:bg-violet-50 hover:text-violet-600"
@@ -209,7 +207,6 @@ function MyCourses() {
                             Edit course
                           </button>
 
-                          {/* Manage Curriculum */}
                           <button
                             onClick={() => openCurriculum(course)}
                             className="w-full flex items-center gap-2 px-4 py-3 text-xs text-gray-700 hover:bg-violet-50 hover:text-violet-600"
@@ -218,7 +215,6 @@ function MyCourses() {
                             Manage curriculum
                           </button>
 
-                          {/* Delete Course */}
                           <button
                             onClick={() =>
                               handleDeleteCourse(course.id)

@@ -1,4 +1,3 @@
-
 import mongoose from "mongoose";
 import Course from "../models/course.model.js";
 import { HttpStatusCode } from "../constants/httpStatus.js";
@@ -257,12 +256,13 @@ const deleteCourse = async (req, res) => {
 };
 
 
-// Publish Course
+
 const publishCourse = async (req, res) => {
     try {
         const { courseId } = req.params;
         const instructorId = req.user?.userId;
 
+        // Check instructor authentication
         if (!instructorId) {
             return res.status(HttpStatusCode.UNAUTHORIZED).json({
                 success: false,
@@ -270,6 +270,7 @@ const publishCourse = async (req, res) => {
             });
         }
 
+        // Validate Course ID
         if (!mongoose.Types.ObjectId.isValid(courseId)) {
             return res.status(HttpStatusCode.BAD_REQUEST).json({
                 success: false,
@@ -277,6 +278,7 @@ const publishCourse = async (req, res) => {
             });
         }
 
+        // Find course belonging to logged-in instructor
         const course = await Course.findOne({
             _id: courseId,
             instructor: instructorId
@@ -289,27 +291,39 @@ const publishCourse = async (req, res) => {
             });
         }
 
-        if (
-            !course.title ||
-            !course.description ||
-            !course.category ||
-            !course.difficultyLevel ||
-            !course.duration ||
-            course.price == null
-        ) {
-            return res.status(HttpStatusCode.BAD_REQUEST).json({
-                success: false,
-                message: Messages.COMPLETE_COURSE_DETAILS
-            });
-        }
+        // Validate required course details before publishing
+        if (course.status === "Draft") {
 
-        course.status = "Published";
+            if (
+                !course.title ||
+                !course.description ||
+                !course.category ||
+                !course.difficultyLevel ||
+                !course.duration ||
+                course.price == null
+            ) {
+                return res.status(HttpStatusCode.BAD_REQUEST).json({
+                    success: false,
+                    message: Messages.COMPLETE_COURSE_DETAILS
+                });
+            }
+
+            // Draft -> Published
+            course.status = "Published";
+
+        } else {
+
+            // Published -> Draft
+            course.status = "Draft";
+        }
 
         await course.save();
 
         return res.status(HttpStatusCode.SUCCESS).json({
             success: true,
-            message: Messages.COURSE_PUBLISHED,
+            message: course.status === "Published"
+                ? Messages.COURSE_PUBLISHED
+                : "Course moved to Draft successfully",
             data: course
         });
 
@@ -320,6 +334,7 @@ const publishCourse = async (req, res) => {
         });
     }
 };
+
 
 
 // Export Controllers

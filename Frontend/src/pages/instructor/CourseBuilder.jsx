@@ -1,559 +1,353 @@
 
 import { useState } from "react";
+import { ImagePlus, Check, Eye, CircleAlert } from "lucide-react";
+
+import {
+  initialCourse,
+  learningOutcomes,
+  courseModules,
+  publishChecklist,
+  courseFields,
+  visibilityOptions,
+  enrollmentOptions,
+  initialVisibility,
+  initialEnrollment,
+} from "../../helper/courseBuilderData";
 
 function CourseBuilder() {
-  const [currentStep, setCurrentStep] = useState(1);
-
-  const [course, setCourse] = useState({
-    title: "",
-    description: "",
-    category: "",
-    difficultyLevel: "Beginner",
-    duration: "",
-    thumbnail: "",
-    price: "",
-  });
-
-  const [sections, setSections] = useState([
-    {
-      id: 1,
-      title: "Introduction",
-      lessons: [
-        {
-          id: 1,
-          title: "",
-          type: "Video",
-          duration: "",
-        },
-      ],
-    },
-  ]);
+  const [step, setStep] = useState(1);
+  const [course, setCourse] = useState({ ...initialCourse });
 
   const updateCourse = (e) => {
-    const { name, value } = e.target;
-
     setCourse((prev) => ({
       ...prev,
-      [name]: value,
+      [e.target.name]: e.target.value,
     }));
   };
 
-  const addSection = () => {
-    setSections((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        title: `New Section ${prev.length + 1}`,
-        lessons: [],
-      },
-    ]);
+  const handleThumbnail = (e) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      setCourse((prev) => ({
+        ...prev,
+        thumbnail: URL.createObjectURL(file),
+      }));
+    }
   };
-
-  const removeSection = (sectionId) => {
-    setSections((prev) =>
-      prev.filter((section) => section.id !== sectionId)
-    );
-  };
-
-  const updateSectionTitle = (sectionId, value) => {
-    setSections((prev) =>
-      prev.map((section) =>
-        section.id === sectionId
-          ? { ...section, title: value }
-          : section
-      )
-    );
-  };
-
-  const addLesson = (sectionId) => {
-    setSections((prev) =>
-      prev.map((section) =>
-        section.id === sectionId
-          ? {
-              ...section,
-              lessons: [
-                ...section.lessons,
-                {
-                  id: Date.now(),
-                  title: "",
-                  type: "Video",
-                  duration: "",
-                },
-              ],
-            }
-          : section
-      )
-    );
-  };
-
-  const updateLesson = (sectionId, lessonId, field, value) => {
-    setSections((prev) =>
-      prev.map((section) =>
-        section.id === sectionId
-          ? {
-              ...section,
-              lessons: section.lessons.map((lesson) =>
-                lesson.id === lessonId
-                  ? { ...lesson, [field]: value }
-                  : lesson
-              ),
-            }
-          : section
-      )
-    );
-  };
-
-  const removeLesson = (sectionId, lessonId) => {
-    setSections((prev) =>
-      prev.map((section) =>
-        section.id === sectionId
-          ? {
-              ...section,
-              lessons: section.lessons.filter(
-                (lesson) => lesson.id !== lessonId
-              ),
-            }
-          : section
-      )
-    );
-  };
-
-  const steps = ["Details", "Content", "Pricing", "Publish"];
-
-  const totalLessons = sections.reduce(
-    (total, section) => total + section.lessons.length,
-    0
-  );
 
   return (
-    <div className="w-full space-y-6">
-
-      {/* Page Heading */}
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">
-          Create Course
+          {step === 1 ? "Create a new course" : "Preview and publish"}
         </h1>
+
         <p className="text-sm text-gray-500 mt-1">
-          Build and manage your course step by step.
+          {step === 1
+            ? "Start with the course information learners will see before enrolling."
+            : "Review the learner experience before making your course available."}
         </p>
       </div>
 
-      {/* Step Navigation */}
-      <div className="bg-white border border-gray-100 rounded-xl p-4 sm:p-6">
-        <div className="flex items-center justify-between gap-2">
-          {steps.map((step, index) => {
-            const stepNumber = index + 1;
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => setStep(1)}
+          className={`rounded-full px-4 py-2 text-xs font-medium ${
+            step === 1
+              ? "bg-violet-600 text-white"
+              : "bg-emerald-50 text-emerald-700"
+          }`}
+        >
+          1. Course details
+        </button>
 
-            return (
-              <div
-                key={step}
-                className="flex flex-1 items-center gap-2"
-              >
-                <div
-                  className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center text-sm font-semibold ${
-                    currentStep >= stepNumber
-                      ? "bg-violet-600 text-white"
-                      : "bg-gray-100 text-gray-500"
-                  }`}
-                >
-                  {stepNumber}
-                </div>
+        <button
+          onClick={() => (window.location.href = "/instructor/curriculum")}
+          className="rounded-full px-4 py-2 text-xs font-medium bg-white text-gray-500"
+        >
+          2. Curriculum
+        </button>
 
-                <span
-                  className={`hidden sm:block text-sm font-medium ${
-                    currentStep === stepNumber
-                      ? "text-violet-600"
-                      : "text-gray-500"
-                  }`}
-                >
-                  {step}
-                </span>
-
-                {index !== steps.length - 1 && (
-                  <div className="flex-1 h-px bg-gray-200" />
-                )}
-              </div>
-            );
-          })}
-        </div>
+        <button
+          onClick={() => setStep(2)}
+          className={`rounded-full px-4 py-2 text-xs font-medium ${
+            step === 2
+              ? "bg-violet-600 text-white"
+              : "bg-white text-gray-500"
+          }`}
+        >
+          3. Preview & publish
+        </button>
       </div>
 
-      {/* Step 1: Details */}
-      {currentStep === 1 && (
-        <div className="bg-white rounded-xl p-5 sm:p-6 border border-gray-100 space-y-5">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900">
-              Course Details
+      {step === 1 && (
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
+          <div className="xl:col-span-2 bg-white rounded-xl border border-gray-100 p-5 sm:p-6">
+            <h2 className="font-semibold text-gray-900">
+              Course information
             </h2>
-            <p className="text-sm text-gray-500 mt-1">
-              Enter the basic information about your course.
+
+            <p className="text-xs text-gray-400 mt-1 mb-7">
+              Add a clear title, description and learning outcomes.
             </p>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Course Title
-            </label>
-            <input
-              type="text"
-              name="title"
-              value={course.title}
-              onChange={updateCourse}
-              placeholder="Enter course title"
-              className="w-full border border-gray-200 rounded-lg px-4 py-3 outline-none focus:border-violet-500"
-            />
-          </div>
+            <div className="space-y-5">
+              {courseFields.map(([name, label]) => (
+                <div key={name}>
+                  <label className="block text-xs font-semibold text-gray-700 mb-2">
+                    {label}
+                  </label>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Course Description
-            </label>
-            <textarea
-              name="description"
-              value={course.description}
-              onChange={updateCourse}
-              rows="4"
-              placeholder="Describe your course"
-              className="w-full border border-gray-200 rounded-lg px-4 py-3 outline-none focus:border-violet-500 resize-none"
-            />
-          </div>
+                  <input
+                    name={name}
+                    value={course[name]}
+                    onChange={updateCourse}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-3 text-sm outline-none focus:border-violet-500"
+                  />
+                </div>
+              ))}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category
-              </label>
-              <input
-                type="text"
-                name="category"
-                value={course.category}
-                onChange={updateCourse}
-                placeholder="e.g. Web Development"
-                className="w-full border border-gray-200 rounded-lg px-4 py-3 outline-none focus:border-violet-500"
-              />
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-2">
+                  Course description
+                </label>
+
+                <textarea
+                  name="description"
+                  value={course.description}
+                  onChange={updateCourse}
+                  rows={4}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-3 text-sm outline-none resize-none focus:border-violet-500"
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Difficulty Level
-              </label>
-              <select
-                name="difficultyLevel"
-                value={course.difficultyLevel}
-                onChange={updateCourse}
-                className="w-full border border-gray-200 rounded-lg px-4 py-3 outline-none focus:border-violet-500"
+            <div className="flex justify-between gap-3 mt-7 pt-5 border-t border-gray-100">
+              <button
+                onClick={() => console.log("Draft:", course)}
+                className="border border-gray-200 rounded-lg px-6 py-3 text-xs font-semibold"
               >
-                <option>Beginner</option>
-                <option>Intermediate</option>
-                <option>Advanced</option>
-              </select>
+                Save draft
+              </button>
+
+              <button
+                onClick={() => setStep(2)}
+                className="bg-violet-600 text-white rounded-lg px-6 py-3 text-xs font-semibold"
+              >
+                Continue to preview →
+              </button>
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Course Duration
-            </label>
-            <input
-              type="text"
-              name="duration"
-              value={course.duration}
-              onChange={updateCourse}
-              placeholder="e.g. 10 hours"
-              className="w-full border border-gray-200 rounded-lg px-4 py-3 outline-none focus:border-violet-500"
-            />
-          </div>
+          <div className="space-y-5">
+            <div className="bg-white rounded-xl border border-gray-100 p-5">
+              <h2 className="font-semibold text-sm">Course thumbnail</h2>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Thumbnail URL
-            </label>
-            <input
-              type="text"
-              name="thumbnail"
-              value={course.thumbnail}
-              onChange={updateCourse}
-              placeholder="Enter thumbnail image URL"
-              className="w-full border border-gray-200 rounded-lg px-4 py-3 outline-none focus:border-violet-500"
-            />
-          </div>
+              <div className="mt-4 h-40 rounded-lg bg-violet-100 flex items-center justify-center overflow-hidden">
+                {course.thumbnail ? (
+                  <img
+                    src={course.thumbnail}
+                    alt="Course thumbnail"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-xs font-semibold text-violet-600">
+                    COURSE IMAGE
+                  </span>
+                )}
+              </div>
 
-          <div className="flex justify-end pt-4 border-t border-gray-100">
-            <button
-              type="button"
-              onClick={() => setCurrentStep(2)}
-              className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-lg text-sm font-medium"
-            >
-              Continue
-            </button>
+              <p className="text-[10px] text-gray-400 mt-3">
+                Recommended: 16:9 image
+              </p>
+
+              <label className="inline-flex items-center gap-2 border border-gray-200 rounded-lg px-4 py-2.5 mt-4 text-xs text-violet-600 cursor-pointer">
+                <ImagePlus size={14} />
+                Upload image
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleThumbnail}
+                  className="hidden"
+                />
+              </label>
+            </div>
+
+              <h2 className="font-semibold text-sm">Learning outcomes</h2>
+            <div className="bg-white rounded-xl border border-gray-100 p-5 min-h-300px">
+
+              <div className="space-y-5 mt-6">
+                {learningOutcomes.map((item) => (
+                  <div key={item} className="flex items-center gap-3">
+                    <span className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                      <Check size={12} />
+                    </span>
+
+                    <p className="text-xs text-gray-600">{item}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Step 2: Content */}
-      {currentStep === 2 && (
-        <div className="bg-white rounded-xl p-5 sm:p-6 border border-gray-100 space-y-6">
-
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900">
-              Course Content
-            </h2>
-            <p className="text-sm text-gray-500 mt-1">
-              Organize your course into sections and lessons.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <div className="bg-violet-50 rounded-lg px-4 py-3">
-              <p className="text-xs text-gray-500">Total Sections</p>
-              <p className="text-xl font-semibold text-violet-600">
-                {sections.length}
+      {step === 2 && (
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
+          <div className="xl:col-span-2 bg-white rounded-xl border border-gray-100 p-5 sm:p-6 space-y-6">
+            <div className="bg-violet-100 rounded-xl p-6 sm:p-8">
+              <p className="text-[10px] font-semibold text-violet-600 uppercase">
+                {course.category}
               </p>
+
+              <h2 className="text-xl font-bold text-gray-900 mt-4">
+                {course.title}
+              </h2>
+
+              <p className="text-xs text-gray-500 mt-3">
+                {course.level} · {course.duration} · 24 lessons
+              </p>
+
+              <button
+                onClick={() => alert("Learner preview coming soon")}
+                className="flex items-center gap-2 bg-white text-violet-600 rounded-full px-4 py-2 text-xs mt-5"
+              >
+                <Eye size={14} />
+                Preview as learner
+              </button>
             </div>
 
-            <div className="bg-violet-50 rounded-lg px-4 py-3">
-              <p className="text-xs text-gray-500">Total Lessons</p>
-              <p className="text-xl font-semibold text-violet-600">
-                {totalLessons}
+            <div>
+              <h2 className="font-semibold text-gray-900">
+                What learners will study
+              </h2>
+
+              <p className="text-xs text-gray-400 mt-2">
+                A structured path from React fundamentals to a real-world project.
               </p>
-            </div>
-          </div>
 
-          {sections.map((section, sectionIndex) => (
-            <div
-              key={section.id}
-              className="border border-gray-200 rounded-xl p-4 space-y-4"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-500 mb-2">
-                    Section {sectionIndex + 1} Title
-                  </label>
-
-                  <input
-                    type="text"
-                    value={section.title}
-                    onChange={(e) =>
-                      updateSectionTitle(section.id, e.target.value)
-                    }
-                    placeholder="Enter section title"
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:border-violet-500"
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => removeSection(section.id)}
-                  className="text-sm text-red-500 hover:text-red-700 sm:mt-6"
-                >
-                  Remove Section
-                </button>
-              </div>
-
-              <div className="space-y-3">
-                {section.lessons.map((lesson, lessonIndex) => (
+              <div className="space-y-3 mt-5">
+                {courseModules.map((module, index) => (
                   <div
-                    key={lesson.id}
-                    className="bg-gray-50 rounded-lg p-3 space-y-3"
+                    key={module.title}
+                    className="bg-gray-50 rounded-lg p-4 flex gap-4"
                   >
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-gray-700">
-                        Lesson {lessonIndex + 1}
+                    <span className="text-xs font-semibold text-violet-500">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+
+                    <div>
+                      <h3 className="text-xs font-semibold">
+                        {module.title}
+                      </h3>
+
+                      <p className="text-[10px] text-gray-400 mt-2">
+                        {module.lessons} lessons · {module.topics}
                       </p>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          removeLesson(section.id, lesson.id)
-                        }
-                        className="text-xs text-red-500"
-                      >
-                        Remove
-                      </button>
-                    </div>
-
-                    <input
-                      type="text"
-                      value={lesson.title}
-                      onChange={(e) =>
-                        updateLesson(
-                          section.id,
-                          lesson.id,
-                          "title",
-                          e.target.value
-                        )
-                      }
-                      placeholder="Enter lesson title"
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:border-violet-500 bg-white"
-                    />
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <select
-                        value={lesson.type}
-                        onChange={(e) =>
-                          updateLesson(
-                            section.id,
-                            lesson.id,
-                            "type",
-                            e.target.value
-                          )
-                        }
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:border-violet-500 bg-white"
-                      >
-                        <option value="Video">Video</option>
-                        <option value="Article">Article</option>
-                        <option value="Document">Document</option>
-                        <option value="Quiz">Quiz</option>
-                      </select>
-
-                      <input
-                        type="text"
-                        value={lesson.duration}
-                        onChange={(e) =>
-                          updateLesson(
-                            section.id,
-                            lesson.id,
-                            "duration",
-                            e.target.value
-                          )
-                        }
-                        placeholder="Duration (e.g. 10 min)"
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 outline-none focus:border-violet-500 bg-white"
-                      />
                     </div>
                   </div>
                 ))}
               </div>
-
-              <button
-                type="button"
-                onClick={() => addLesson(section.id)}
-                className="text-sm font-medium text-violet-600 hover:text-violet-700"
-              >
-                + Add Lesson
-              </button>
             </div>
-          ))}
+          </div>
 
+          <div className="space-y-5">
+            <div className="bg-white border border-gray-100 rounded-xl p-5">
+              <h2 className="font-semibold text-sm">Publish checklist</h2>
+
+              <div className="space-y-5 mt-6">
+                {publishChecklist.map((item) => (
+                  <div key={item.title} className="flex items-center gap-3">
+                    <span
+                      className={`w-5 h-5 rounded-full flex items-center justify-center ${
+                        item.completed
+                          ? "bg-emerald-50 text-emerald-600"
+                          : "bg-orange-50 text-orange-500"
+                      }`}
+                    >
+                      {item.completed ? (
+                        <Check size={12} />
+                      ) : (
+                        <CircleAlert size={12} />
+                      )}
+                    </span>
+
+                    <p className="text-xs text-gray-600">{item.title}</p>
+                  </div>
+                ))}
+              </div>
+
+              <span className="inline-block mt-6 bg-orange-50 text-orange-600 rounded-full px-3 py-1.5 text-[10px]">
+                5 of 6 complete
+              </span>
+            </div>
+
+            <PublishingOptions />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PublishingOptions() {
+  const [visibility, setVisibility] = useState(initialVisibility);
+  const [enrollment, setEnrollment] = useState(initialEnrollment);
+
+  return (
+    <div className="bg-white border border-gray-100 rounded-xl p-5">
+      <h2 className="font-semibold text-sm">Publishing options</h2>
+
+      <label className="block text-[10px] text-gray-500 mt-6 mb-3">
+        Course visibility
+      </label>
+
+      <div className="flex gap-2">
+        {visibilityOptions.map((item) => (
           <button
-            type="button"
-            onClick={addSection}
-            className="w-full border border-dashed border-violet-300 rounded-lg py-3 text-sm font-medium text-violet-600 hover:bg-violet-50"
+            key={item}
+            onClick={() => setVisibility(item)}
+            className={`rounded-full px-5 py-2 text-xs ${
+              visibility === item
+                ? "bg-violet-600 text-white"
+                : "text-gray-500"
+            }`}
           >
-            + Add New Section
+            {item}
           </button>
+        ))}
+      </div>
 
-          <div className="flex flex-wrap justify-between gap-3 pt-4 border-t border-gray-100">
-            <button
-              type="button"
-              onClick={() => setCurrentStep(1)}
-              className="border border-gray-200 text-gray-700 px-6 py-3 rounded-lg text-sm font-medium"
-            >
-              Back
-            </button>
+      <label className="block text-[10px] text-gray-500 mt-6 mb-3">
+        Enrollment
+      </label>
 
-            <button
-              type="button"
-              onClick={() => setCurrentStep(3)}
-              className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-lg text-sm font-medium"
-            >
-              Continue
-            </button>
-          </div>
-        </div>
-      )}
+      <select
+        value={enrollment}
+        onChange={(e) => setEnrollment(e.target.value)}
+        className="w-full bg-violet-50 rounded-lg px-3 py-3 text-xs text-violet-600 outline-none"
+      >
+        {enrollmentOptions.map((item) => (
+          <option key={item}>{item}</option>
+        ))}
+      </select>
 
-      {/* Step 3: Pricing */}
-      {currentStep === 3 && (
-        <div className="bg-white rounded-xl p-5 sm:p-6 border border-gray-100 space-y-5">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900">
-              Course Pricing
-            </h2>
-            <p className="text-sm text-gray-500 mt-1">
-              Set the price for your course.
-            </p>
-          </div>
+      <p className="text-[10px] text-gray-400 mt-6">
+        After publishing, learners can discover and enroll in this course.
+      </p>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Course Price
-            </label>
-            <input
-              type="number"
-              name="price"
-              min="0"
-              value={course.price}
-              onChange={updateCourse}
-              placeholder="Enter course price"
-              className="w-full border border-gray-200 rounded-lg px-4 py-3 outline-none focus:border-violet-500"
-            />
-          </div>
+      <button
+        onClick={() => alert("Publishing will be connected to the backend later.")}
+        className="w-full bg-violet-600 text-white rounded-lg py-3 mt-7 text-xs font-semibold"
+      >
+        Publish course
+      </button>
 
-          <div className="flex justify-between gap-3 pt-4 border-t border-gray-100">
-            <button
-              type="button"
-              onClick={() => setCurrentStep(2)}
-              className="border border-gray-200 text-gray-700 px-6 py-3 rounded-lg text-sm font-medium"
-            >
-              Back
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setCurrentStep(4)}
-              className="bg-violet-600 text-white px-6 py-3 rounded-lg text-sm font-medium"
-            >
-              Continue
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 4: Publish */}
-      {currentStep === 4 && (
-        <div className="bg-white rounded-xl p-5 sm:p-6 border border-gray-100 space-y-5">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900">
-              Review Your Course
-            </h2>
-            <p className="text-sm text-gray-500 mt-1">
-              Check your course information before publishing.
-            </p>
-          </div>
-
-          <div className="space-y-3 text-sm">
-            <p><strong>Title:</strong> {course.title || "Not entered"}</p>
-            <p><strong>Category:</strong> {course.category || "Not entered"}</p>
-            <p><strong>Level:</strong> {course.difficultyLevel}</p>
-            <p><strong>Duration:</strong> {course.duration || "Not entered"}</p>
-            <p><strong>Sections:</strong> {sections.length}</p>
-            <p><strong>Lessons:</strong> {totalLessons}</p>
-            <p><strong>Price:</strong> {course.price || "Not entered"}</p>
-          </div>
-
-          <div className="flex justify-between gap-3 pt-4 border-t border-gray-100">
-            <button
-              type="button"
-              onClick={() => setCurrentStep(3)}
-              className="border border-gray-200 text-gray-700 px-6 py-3 rounded-lg text-sm font-medium"
-            >
-              Back
-            </button>
-
-            <button
-              type="button"
-              onClick={() =>
-                console.log("Course data:", { ...course, sections })
-              }
-              className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-lg text-sm font-medium"
-            >
-              Publish Course
-            </button>
-          </div>
-        </div>
-      )}
-
+      <p className="text-[10px] text-gray-400 mt-4">
+        You can unpublish or edit the course later.
+      </p>
     </div>
   );
 }

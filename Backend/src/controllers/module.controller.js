@@ -18,12 +18,9 @@ const createModule = async (req, res) => {
       });
     }
 
-    const course = await Course.findOne({
-      _id: courseId,
-      instructor: instructorId,
-    });
+    const course = await Course.findById(courseId);
 
-    if (!course) {
+    if (!course || course.instructor.toString() !== instructorId.toString()) {
       return res.status(HttpStatusCode.NOT_FOUND).json({
         success: false,
         message: Messages.COURSE_NOT_FOUND_OR_UNAUTHORIZED,
@@ -108,7 +105,6 @@ const updateModule = async (req, res) => {
   try {
     const { moduleId } = req.params;
     const instructorId = req.user?.userId;
-    const { title, description } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(moduleId)) {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
@@ -126,22 +122,16 @@ const updateModule = async (req, res) => {
       });
     }
 
-    // Ownership check through parent course
-    const course = await Course.findOne({
-      _id: moduleDoc.courseId,
-      instructor: instructorId,
-    });
+    const course = await Course.findById(moduleDoc.courseId);
 
-    if (!course) {
+    if (!course || course.instructor.toString() !== instructorId.toString()) {
       return res.status(HttpStatusCode.NOT_FOUND).json({
         success: false,
         message: Messages.COURSE_NOT_FOUND_OR_UNAUTHORIZED,
       });
     }
 
-    if (title !== undefined) moduleDoc.title = title;
-    if (description !== undefined) moduleDoc.description = description;
-
+    Object.assign(moduleDoc, req.body);
     await moduleDoc.save();
 
     return res.status(HttpStatusCode.SUCCESS).json({
@@ -179,12 +169,9 @@ const deleteModule = async (req, res) => {
       });
     }
 
-    const course = await Course.findOne({
-      _id: moduleDoc.courseId,
-      instructor: instructorId,
-    });
+    const course = await Course.findById(moduleDoc.courseId);
 
-    if (!course) {
+    if (!course || course.instructor.toString() !== instructorId.toString()) {
       return res.status(HttpStatusCode.NOT_FOUND).json({
         success: false,
         message: Messages.COURSE_NOT_FOUND_OR_UNAUTHORIZED,

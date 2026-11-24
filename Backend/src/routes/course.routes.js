@@ -1,12 +1,11 @@
 import express from "express";
 import * as courseController from "../controllers/course.controller.js";
-import * as moduleController from "../controllers/module.controller.js";
 
 import {
   validateCourse,
   validateUpdateCourse,
 } from "../validations/course.validation.js";
-import { validateModule } from "../validations/module.validation.js";
+
 
 import {
   isAuthenticated,
@@ -63,21 +62,5 @@ router.patch(
   courseController.publishCourse,
 );
 
-// Course Scoped
-// Create Module
-router.post(
-  "/:courseId/modules",
-  isAuthenticated,
-  instructorMiddleware,
-  validateModule,
-  moduleController.createModule,
-);
-
-// Get All Modules of a Course
-router.get(
-  "/:courseId/modules",
-  isAuthenticated,
-  moduleController.getCourseModules,
-);
 
 export default router;

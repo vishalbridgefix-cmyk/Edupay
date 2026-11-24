@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 import Lesson from "../models/lesson.model.js";
-//import Module from "../models/module.model.js";
+// import Module from "../models/module.model.js";
 import Course from "../models/course.model.js";
 import { HttpStatusCode } from "../constants/httpStatus.js";
 import { Messages } from "../constants/messages.js";
+
 
 // Create Lesson
 const createLesson = async (req, res) => {
@@ -34,6 +35,7 @@ const createLesson = async (req, res) => {
             });
         }
 
+        // Check module ownership
         const course = await Course.findOne({
             _id: module.courseId,
             instructor: instructorId
@@ -46,9 +48,17 @@ const createLesson = async (req, res) => {
             });
         }
 
+        // Automatically generate lesson order
+        const lastLesson = await Lesson.findOne({ moduleId })
+            .sort({ order: -1 });
+
+        const nextOrder = lastLesson ? lastLesson.order + 1 : 1;
+
+        // Create lesson
         const lesson = await Lesson.create({
             ...req.body,
-            moduleId
+            moduleId,
+            order: nextOrder
         });
 
         return res.status(HttpStatusCode.CREATED).json({
@@ -180,6 +190,7 @@ const updateLesson = async (req, res) => {
             });
         }
 
+        // Verify course ownership through module
         const course = await Course.findOne({
             _id: module.courseId,
             instructor: instructorId
@@ -242,7 +253,7 @@ const updateLesson = async (req, res) => {
 };
 
 
-// Delete Lesson
+
 const deleteLesson = async (req, res) => {
     try {
         const { lessonId } = req.params;
@@ -280,6 +291,7 @@ const deleteLesson = async (req, res) => {
             });
         }
 
+        // Verify course ownership
         const course = await Course.findOne({
             _id: module.courseId,
             instructor: instructorId
@@ -292,7 +304,22 @@ const deleteLesson = async (req, res) => {
             });
         }
 
+        const moduleId = lesson.moduleId;
+        const deletedOrder = lesson.order;
+
+        // Delete lesson
         await Lesson.findByIdAndDelete(lessonId);
+
+        // Decrease order of all lessons after deleted lesson
+        await Lesson.updateMany(
+            {
+                moduleId,
+                order: { $gt: deletedOrder }
+            },
+            {
+                $inc: { order: -1 }
+            }
+        );
 
         return res.status(HttpStatusCode.SUCCESS).json({
             success: true,
@@ -306,6 +333,7 @@ const deleteLesson = async (req, res) => {
         });
     }
 };
+
 
 
 // Export Controllers

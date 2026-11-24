@@ -11,7 +11,7 @@ const router = express.Router();
 
 // Create Lesson
 router.post(
-    "/modules/:moduleId/lessons",
+    "/:moduleId",
     isAuthenticated,
     instructorMiddleware,
     lessonController.createLesson
@@ -19,19 +19,19 @@ router.post(
 
 // Get All Lessons By Module ID
 router.get(
-    "/modules/:moduleId/lessons",
+    "/:moduleId",
     lessonController.getLessonsByModule
 );
 
 // Get Lesson By ID
 router.get(
-    "/lessons/:lessonId",
+    "/:lessonId",
     lessonController.getLessonById
 );
 
 // Update Lesson
 router.patch(
-    "/lessons/:lessonId",
+    "/:lessonId",
     isAuthenticated,
     instructorMiddleware,
     lessonController.updateLesson
@@ -39,7 +39,7 @@ router.patch(
 
 // Delete Lesson
 router.delete(
-    "/lessons/:lessonId",
+    "/:lessonId",
     isAuthenticated,
     instructorMiddleware,
     lessonController.deleteLesson

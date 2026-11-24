@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 // Main Course Schema
@@ -18,6 +19,7 @@ const courseSchema = new mongoose.Schema(
         thumbnail: {
             type: String,
             default: "",
+            trim: true,
         },
 
         category: {
@@ -55,13 +57,6 @@ const courseSchema = new mongoose.Schema(
             ref: "User",
             required: true,
         },
-
-        lessons: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Lesson",
-            },
-        ],
     },
     { timestamps: true }
 );

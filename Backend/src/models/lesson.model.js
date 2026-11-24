@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
-const moduleSchema = new mongoose.Schema(
+const lessonSchema = new mongoose.Schema(
     {
-        courseId: {
+        moduleId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Course",
+            ref: "Module",
             required: true,
         },
 
@@ -12,9 +12,18 @@ const moduleSchema = new mongoose.Schema(
             type: String,
             required: true,
             trim: true,
+            minlength: [3, "Lesson title must be at least 3 characters"],
+            maxlength: [120, "Lesson title cannot exceed 120 characters"],
         },
 
         description: {
+            type: String,
+            default: "",
+            trim: true,
+            maxlength: [500, "Description cannot exceed 500 characters"],
+        },
+
+        content: {
             type: String,
             default: "",
             trim: true,
@@ -29,8 +38,10 @@ const moduleSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-moduleSchema.index({ courseId: 1, order: 1 });
-        
-const Module = mongoose.model("Module", moduleSchema);
+// Index for fetching lessons module-wise in order
+lessonSchema.index({ moduleId: 1, order: 1 });
 
-export default Module;
+// Create Lesson Model
+const Lesson = mongoose.model("Lesson", lessonSchema);
+
+export default Lesson;

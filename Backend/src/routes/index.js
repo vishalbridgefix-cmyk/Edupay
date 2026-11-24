@@ -13,7 +13,7 @@ const router = express.Router();
 router.use("/instructor/courses", courseRoutes);
 router.use("/users", userRoutes);
 router.use("/auth",authRoutes)
-app.use("/api/upload", uploadRoutes);
+router.use("/api/upload", uploadRoutes);
 
 
 export default router;

@@ -1,7 +1,5 @@
-
 import express from "express";
 import * as lessonController from "../controllers/lesson.controller.js";
-
 import {
     isAuthenticated,
     instructorMiddleware

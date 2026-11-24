@@ -7,14 +7,17 @@ import tokenBlacklistModel from "../models/tokenBlacklist.model.js";
 
 import {
   registerSchema,
-  loginSchema,
-  
+  loginSchema
 } from "../validations/user.validation.js";
+import { Messages } from "../constants/messages.js";
 
 
 export const registerController = async (req, res) => {
+
   try {
-    const { error, value } = registerSchema.validate(req.body);
+
+    // Validate registration data
+    const { error, value } = registerSchema.validate(req.body ?? {});
 
     if (error) {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
@@ -32,24 +35,28 @@ export const registerController = async (req, res) => {
       gender,
       address,
       role,
+      profileImage
     } = value;
 
-    const profileImage = req.file
-      ? `/uploads/${req.file.filename}`
-      : "";
 
+    // Check existing user
     const existingUser = await userModel.findOne({ email });
 
     if (existingUser) {
-      return res.status(HttpStatusCode.BAD_REQUEST).json({
-        message: "User with this email already exists",
+      return res.status(HttpStatusCode.CONFLICT).json({
+        message: Messages.ALREADY_EXISTS,
         success: false,
       });
     }
 
+
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+
+    // Create user with Cloudinary image URL
     const newUser = await userModel.create({
+
       fullName,
       email,
       password: hashedPassword,
@@ -58,12 +65,18 @@ export const registerController = async (req, res) => {
       gender,
       address,
       role,
-      ProfileImage: profileImage,
+
+      ProfileImage: profileImage || "",
+
     });
 
+
     return res.status(HttpStatusCode.CREATED).json({
-      message: "User registered successfully",
+
+      message: Messages.REGISTER_SUCCESS,
+
       success: true,
+
       user: {
         _id: newUser._id,
         fullName: newUser.fullName,
@@ -75,23 +88,29 @@ export const registerController = async (req, res) => {
         role: newUser.role,
         ProfileImage: newUser.ProfileImage,
       },
+
     });
 
   } catch (error) {
+
     console.error("Register Error:", error);
 
     return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       message: "Internal Server Error",
       success: false,
     });
+
   }
+
 };
 
 
-
+// LOGIN CONTROLLER
 
 export const loginController = async (req, res) => {
+
   try {
+
     const { error, value } = loginSchema.validate(req.body);
 
     if (error) {
@@ -103,13 +122,11 @@ export const loginController = async (req, res) => {
 
     const { email, password } = value;
 
-    const user = await userModel
-      .findOne({ email })
-      .select("+password");
+    const user = await userModel.findOne({ email }).select("+password");
 
     if (!user) {
       return res.status(HttpStatusCode.NOT_FOUND).json({
-        message: "User not found.",
+        message: Messages.NOT_FOUND,
         success: false,
       });
     }
@@ -121,7 +138,7 @@ export const loginController = async (req, res) => {
 
     if (!isPasswordCorrect) {
       return res.status(HttpStatusCode.UNAUTHORIZED).json({
-        message: "Invalid email or password",
+        message: Messages.INVALID_CREDENTIALS,
         success: false,
       });
     }
@@ -139,9 +156,13 @@ export const loginController = async (req, res) => {
     );
 
     return res.status(HttpStatusCode.SUCCESS).json({
-      message: "Login successful",
+
+      message: Messages.LOGIN_SUCCESS,
+
       success: true,
+
       token,
+
       user: {
         _id: user._id,
         fullName: user.fullName,
@@ -153,53 +174,64 @@ export const loginController = async (req, res) => {
         role: user.role,
         profileImage: user.ProfileImage,
       },
+
     });
 
   } catch (error) {
+
     console.error("Login Error:", error);
 
     return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       message: "Internal Server Error",
       success: false,
     });
+
   }
+
 };
 
 
-
+// LOGOUT CONTROLLER
 
 export const logoutController = async (req, res) => {
+
   try {
-    
-    const token = req.headers.authorization.split(" ")[1];
 
+    const authHeader = req.headers.authorization;
 
-    const decoded = jwt.decode(token);
-
-    if (!decoded || !decoded.exp) {
-      return res.status(401).json({
-        message: "Invalid token",
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(HttpStatusCode.UNAUTHORIZED).json({
+        message: Messages.AUTH_TOKEN_REQUIRED,
         success: false,
       });
     }
 
-   
+    const token = authHeader.split(" ")[1];
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     await tokenBlacklistModel.create({
+
       token,
+
       expiresAt: new Date(decoded.exp * 1000),
+
     });
 
     return res.status(HttpStatusCode.SUCCESS).json({
-      message: "Logout successfully",
+      message: Messages.LOGOUT_SUCCESS,
       success: true,
     });
 
   } catch (error) {
+
     console.error("Logout Error:", error);
 
     return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
       message: "Internal Server Error",
       success: false,
     });
+
   }
+
 };

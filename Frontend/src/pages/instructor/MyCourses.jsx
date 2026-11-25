@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -13,7 +12,7 @@ import {
   tabs,
   getAllCourses,
   deleteCourse,
-} from "../../helper/instructor/coursesData";
+} from "../../helper/coursesData";
 
 function MyCourses() {
   const navigate = useNavigate();

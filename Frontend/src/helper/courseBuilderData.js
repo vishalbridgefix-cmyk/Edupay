@@ -1,4 +1,3 @@
-
 export const initialCourse = {
   title: "React.js Masterclass: From Basics to Projects",
   shortDescription: "Build modern web applications with React",
@@ -21,8 +20,16 @@ export const courseModules = [
   { title: "Getting started", lessons: 4, topics: "Welcome · Setup" },
   { title: "JavaScript essentials", lessons: 5, topics: "ES6 · Array methods" },
   { title: "React fundamentals", lessons: 4, topics: "JSX · Components" },
-  { title: "Hooks & state management", lessons: 5, topics: "useState · useEffect" },
-  { title: "Build a real project", lessons: 6, topics: "Planning · API integration" },
+  {
+    title: "Hooks & state management",
+    lessons: 5,
+    topics: "useState · useEffect",
+  },
+  {
+    title: "Build a real project",
+    lessons: 6,
+    topics: "Planning · API integration",
+  },
 ];
 
 export const publishChecklist = [

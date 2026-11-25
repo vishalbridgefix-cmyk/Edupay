@@ -1,4 +1,3 @@
-
 import { Star, Palette, Code2, Lightbulb } from "lucide-react";
 
 function RecommendedCourseCard({ course, onSelect }) {

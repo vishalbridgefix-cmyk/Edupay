@@ -1,6 +1,3 @@
-
-
-
 import { ArrowRight } from "lucide-react";
 
 function SectionHeading({ title, action, onActionClick }) {

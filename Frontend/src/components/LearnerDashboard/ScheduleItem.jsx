@@ -1,4 +1,3 @@
-
 function ScheduleItem({ session }) {
 
   const sessionColors = {

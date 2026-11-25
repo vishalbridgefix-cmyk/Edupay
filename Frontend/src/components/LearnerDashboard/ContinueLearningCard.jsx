@@ -1,4 +1,3 @@
-
 import { Play } from "lucide-react";
 
 function ContinueLearningCard({ course, onResume }) {

@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import { getNavigation } from "../helper/Navigation";
+import { getNavigation } from "../helper/instructor/Navigation.jsx";
 
 function MainLayout({ role }) {
   const user = {

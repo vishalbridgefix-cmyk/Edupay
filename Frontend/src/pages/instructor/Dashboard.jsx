@@ -1,15 +1,14 @@
 
-import StatsCards from "../../components/StatsCards";
-import LearnerEngagement from "../../components/LearnerEngagement";
-import RecentActivity from "../../components/RecentActivity";
-import TopCourses from "../../components/TopCourses";
-
+import StatsCards from "../../components/dashboard/StatsCards.jsx";
+import LearnerEngagement from "../../components/dashboard/LearnerEngagement.jsx";
+import RecentActivity from "../../components/dashboard/RecentActivity.jsx";
+import TopCourses from "../../components/dashboard/TopCourses.jsx";
 import {
   instructorStats,
   learnerEngagementData,
   recentActivities,
   topCourses,
-} from "../../helper/instructorData";
+} from "../../helper/instructor/dashboardData.js";
 
 function Dashboard() {
   return (

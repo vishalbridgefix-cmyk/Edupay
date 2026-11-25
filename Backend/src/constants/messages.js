@@ -54,9 +54,9 @@ LOGIN_REQUIRED: "Please login first",
 INSTRUCTOR_ONLY: "Only instructors can manage courses",
 
 //User Messages
-
 USER_FETCHED:"User Fetched successFully",
-USER_UPDATED:"User Updated SuccesFully"
+USER_UPDATED:"User Updated SuccesFully",
+
 });
 
 // Joi Validation Messages

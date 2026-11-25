@@ -11,13 +11,11 @@ import {
 
 import EmptyState from "../../components/LearnerDashboard/EmptyState";
 import SectionHeading from "../../components/LearnerDashboard/SectionHeading";
-
 import ContinueLearningCard from "../../components/LearnerDashboard/ContinueLearningCard";
 import ScheduleItem from "../../components/LearnerDashboard/ScheduleItem";
 import RecommendedCourseCard from "../../components/LearnerDashboard/RecommendedCourseCard";
 import LearnerJourneyBanner from "../../components/LearnerDashboard/LearnerJourneyBanner";
 import StatCard from "../../components/LearnerDashboard/statCard";
-
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -27,43 +25,37 @@ function Dashboard() {
   };
 
   const handleResumeCourse = (course) => {
-    console.log("Resume course:", course);
+    console.log("Resume course:", course.courseId);
   };
 
   const handleSelectRecommendedCourse = (course) => {
-    console.log("Selected course:", course);
+    console.log("Selected course:", course.courseId);
     navigate("/learner/explore-courses");
   };
 
   return (
     <div className="w-full min-w-0 space-y-5 pb-2 xl:space-y-5">
-       
+
       <LearnerJourneyBanner onContinue={handleContinueLearning} />
 
+      {/* Overview Statistics */}
       <section>
-         
         <SectionHeading title="Your overview" />
 
-        <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 xl:grid-cols-4">
-          {learnerStats.length > 0 ? (
-            learnerStats.map((stat) => (
-              <StatCard key={stat.title} stat={stat} />
-            ))
-          ) : (
-            <div className="col-span-full">
-              <EmptyState message="No learning statistics available." />
-            </div>
-          )}
-        </div>
+        <StatCard stats={learnerStats} />
       </section>
 
+      {/* Continue Learning and Schedule */}
       <section>
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1.8fr_1fr]">
+
           <div className="min-w-0">
             <SectionHeading
               title="Continue learning"
               action="View all"
-              onActionClick={() => navigate("/learner/my-learning")}
+              onActionClick={() =>
+                navigate("/learner/my-learning")
+              }
             />
 
             {continueLearningCourses.length === 0 ? (
@@ -72,7 +64,7 @@ function Dashboard() {
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {continueLearningCourses.map((course) => (
                   <ContinueLearningCard
-                    key={course.id}
+                    key={course.courseId}
                     course={course}
                     onResume={handleResumeCourse}
                   />
@@ -85,15 +77,18 @@ function Dashboard() {
             <SectionHeading
               title="Upcoming schedule"
               action="View all"
-              onActionClick={() => navigate("/learner/schedule")}
+              onActionClick={() =>
+                navigate("/learner/schedule")
+              }
             />
 
             <div className="min-h-[220px] rounded-xl border border-gray-200 bg-white p-4 sm:p-5">
+
               <div className="mb-4 flex items-center gap-2">
                 <CalendarDays size={16} className="text-violet-600" />
 
                 <p className="text-xs font-semibold text-gray-400">
-                  TODAY · 16 NOV
+                  UPCOMING SESSIONS
                 </p>
               </div>
 
@@ -102,20 +97,27 @@ function Dashboard() {
               ) : (
                 <div className="space-y-4">
                   {upcomingSchedule.map((session) => (
-                    <ScheduleItem key={session.id} session={session} />
+                    <ScheduleItem
+                      key={session.sessionId}
+                      session={session}
+                    />
                   ))}
                 </div>
               )}
             </div>
           </div>
+
         </div>
       </section>
 
+      {/* Recommended Courses */}
       <section>
         <SectionHeading
           title="Recommended for you"
           action="Explore all"
-          onActionClick={() => navigate("/learner/explore-courses")}
+          onActionClick={() =>
+            navigate("/learner/explore-courses")
+          }
         />
 
         {recommendedCourses.length === 0 ? (
@@ -124,7 +126,7 @@ function Dashboard() {
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {recommendedCourses.map((course) => (
               <RecommendedCourseCard
-                key={course.id}
+                key={course.courseId}
                 course={course}
                 onSelect={handleSelectRecommendedCourse}
               />
@@ -132,8 +134,10 @@ function Dashboard() {
           </div>
         )}
       </section>
+
     </div>
   );
 }
 
 export default Dashboard;
+

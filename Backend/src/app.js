@@ -5,6 +5,10 @@ import cors from "cors";
 import path from "path";
 import morgan from "morgan";
 
+//Swagger import
+import swaggerUi from 'swagger-ui-express'
+import swaggerSpec from "./config/swagger.js";
+
 import routes from "./routes/index.js";
 
 const app = express();
@@ -18,6 +22,9 @@ app.use(morgan("dev"));
 
 // Static uploads folder
 app.use("/uploads", express.static(path.join(import.meta.dirname, "..", "uploads")));
+
+//for swagger docs
+app.use("/api-docs",swaggerUi.serve,swaggerUi.setup(swaggerSpec))
 
 // All API Routes
 app.use("/api", routes);

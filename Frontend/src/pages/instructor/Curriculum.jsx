@@ -22,6 +22,7 @@ function Curriculum() {
     title: "Demo Course",
     modules: curriculumData[firstCourseId],
   };
+
   const courseId = selectedCourse?.id;
 
   const [view, setView] = useState("curriculum");
@@ -58,11 +59,10 @@ function Curriculum() {
       setLesson(
         firstLesson
           ? {
-            ...DEFAULT_LESSON,
-            ...firstLesson,
-            format:
-              firstLesson.type || firstLesson.format || "Video",
-          }
+              ...DEFAULT_LESSON,
+              ...firstLesson,
+              format: firstLesson.type || firstLesson.format || "Video",
+            }
           : { ...DEFAULT_LESSON }
       );
     } else {
@@ -74,7 +74,6 @@ function Curriculum() {
     setView("curriculum");
     setFiles([]);
   }, [courseId, location.key]);
-
 
   const selectedModule = modules.find(
     (module) => module.id === selectedModuleId
@@ -88,7 +87,6 @@ function Curriculum() {
     (item) => item.id === selectedLessonId
   );
 
-
   const selectLesson = (module, selected) => {
     setSelectedModuleId(module.id);
     setSelectedLessonId(selected.id);
@@ -98,11 +96,7 @@ function Curriculum() {
       ...selected,
       format: selected.type || selected.format || "Video",
     });
-
-
-
   };
-
 
   const updateLesson = (e) => {
     const { name, value } = e.target;
@@ -112,7 +106,6 @@ function Curriculum() {
       [name]: value,
     }));
   };
-
 
   const addModule = () => {
     const newModule = {
@@ -127,7 +120,6 @@ function Curriculum() {
     setLesson({ ...DEFAULT_LESSON });
     setView("curriculum");
   };
-
 
   const addLesson = () => {
     if (!selectedModuleId) {
@@ -152,9 +144,9 @@ function Curriculum() {
       prev.map((module) =>
         module.id === selectedModuleId
           ? {
-            ...module,
-            lessons: [...module.lessons, newLesson],
-          }
+              ...module,
+              lessons: [...module.lessons, newLesson],
+            }
           : module
       )
     );
@@ -180,7 +172,6 @@ function Curriculum() {
     );
   };
 
-
   const saveLesson = () => {
     if (!lesson.title.trim()) {
       alert("Please enter a lesson title.");
@@ -191,17 +182,17 @@ function Curriculum() {
       prev.map((module) =>
         module.id === selectedModuleId
           ? {
-            ...module,
-            lessons: module.lessons.map((item) =>
-              item.id === selectedLessonId
-                ? {
-                  ...item,
-                  ...lesson,
-                  type: lesson.format,
-                }
-                : item
-            ),
-          }
+              ...module,
+              lessons: module.lessons.map((item) =>
+                item.id === selectedLessonId
+                  ? {
+                      ...item,
+                      ...lesson,
+                      type: lesson.format,
+                    }
+                  : item
+              ),
+            }
           : module
       )
     );
@@ -224,13 +215,11 @@ function Curriculum() {
     e.target.value = "";
   };
 
-
   const removeFile = (id) => {
     setFiles((prev) =>
       prev.filter((file) => file.id !== id)
     );
   };
-
 
   const openCourseBuilder = (showPreview = false) => {
     if (!selectedCourse) {
@@ -249,7 +238,6 @@ function Curriculum() {
       },
     });
   };
-
 
   if (!selectedCourse) {
     return (
@@ -280,8 +268,6 @@ function Curriculum() {
 
   return (
     <div className="space-y-6">
-
-
       <div>
         <h1 className="text-2xl font-bold text-gray-900">
           {view === "curriculum"
@@ -304,8 +290,6 @@ function Curriculum() {
           />
 
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
-
-
             <div className="xl:col-span-2">
               <CourseOutline
                 modules={modules}
@@ -318,12 +302,10 @@ function Curriculum() {
                   setSelectedLessonId(null);
                   setLesson({ ...DEFAULT_LESSON });
                 }}
-
                 onSelectLesson={selectLesson}
                 onAddLesson={addLesson}
               />
             </div>
-
 
             <div className="space-y-5">
               <LessonDetails
@@ -335,11 +317,19 @@ function Curriculum() {
 
               <LearningResources files={files} />
             </div>
+          </div>
 
+          {/* Continue to Preview Button */}
+          <div className="flex justify-end mt-6">
+            <button
+              onClick={() => openCourseBuilder(true)}
+              className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-lg text-sm font-medium"
+            >
+              Continue to Preview →
+            </button>
           </div>
         </>
       )}
-
 
       {view === "editor" && (
         <>
@@ -357,8 +347,6 @@ function Curriculum() {
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
-
-
             <div className="xl:col-span-2">
               <LessonEditor
                 lesson={lesson}
@@ -378,7 +366,6 @@ function Curriculum() {
               />
             </div>
 
-
             <div className="space-y-5">
               <LessonSettings
                 lesson={lesson}
@@ -392,11 +379,9 @@ function Curriculum() {
                 onRemoveFile={removeFile}
               />
             </div>
-
           </div>
         </>
       )}
-
     </div>
   );
 }

@@ -91,7 +91,6 @@ const getCourseById = async (req, res) => {
   try {
     const { courseId } = req.params;
 
-    // Validate Course ID
     if (!mongoose.Types.ObjectId.isValid(courseId)) {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
         success: false,
@@ -99,7 +98,6 @@ const getCourseById = async (req, res) => {
       });
     }
 
-    // Find Course By ID
     const course = await Course.findById(courseId);
 
     if (!course) {
@@ -122,12 +120,12 @@ const getCourseById = async (req, res) => {
   }
 };
 
+// Update Course
 const updateCourse = async (req, res) => {
   try {
     const { courseId } = req.params;
     const instructorId = req.user?.userId;
 
-    // 1. Check authentication
     if (!instructorId) {
       return res.status(HttpStatusCode.UNAUTHORIZED).json({
         success: false,
@@ -135,7 +133,6 @@ const updateCourse = async (req, res) => {
       });
     }
 
-    // 2. Validate Course ID
     if (!mongoose.Types.ObjectId.isValid(courseId)) {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
         success: false,
@@ -143,17 +140,15 @@ const updateCourse = async (req, res) => {
       });
     }
 
-    // 3. Check whether course exists
     const existingCourse = await Course.findById(courseId);
 
     if (!existingCourse) {
       return res.status(HttpStatusCode.NOT_FOUND).json({
         success: false,
-        message: "Course not found",
+        message: Messages.COURSE_NOT_FOUND,
       });
     }
 
-    // 4. Check course ownership
     if (existingCourse.instructor.toString() !== instructorId.toString()) {
       return res.status(HttpStatusCode.FORBIDDEN).json({
         success: false,
@@ -161,7 +156,6 @@ const updateCourse = async (req, res) => {
       });
     }
 
-    // 5. Allowed fields
     const allowedFields = [
       "title",
       "description",
@@ -186,23 +180,20 @@ const updateCourse = async (req, res) => {
       });
     }
 
-    // 6. Update course
     const updatedCourse = await Course.findByIdAndUpdate(
       courseId,
       { $set: updateData },
       {
         returnDocument: "after",
         runValidators: true,
-      }
+      },
     );
 
-    // 7. Success response
     return res.status(HttpStatusCode.SUCCESS).json({
       success: true,
       message: Messages.COURSE_UPDATED,
       data: updatedCourse,
     });
-
   } catch (error) {
     return res.status(HttpStatusCode.BAD_REQUEST).json({
       success: false,
@@ -255,12 +246,12 @@ const deleteCourse = async (req, res) => {
   }
 };
 
+// Publish Course (Draft -> Published)
 const publishCourse = async (req, res) => {
   try {
     const { courseId } = req.params;
     const instructorId = req.user?.userId;
 
-    // Check instructor authentication
     if (!instructorId) {
       return res.status(HttpStatusCode.UNAUTHORIZED).json({
         success: false,
@@ -268,7 +259,6 @@ const publishCourse = async (req, res) => {
       });
     }
 
-    // Validate Course ID
     if (!mongoose.Types.ObjectId.isValid(courseId)) {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
         success: false,
@@ -276,7 +266,6 @@ const publishCourse = async (req, res) => {
       });
     }
 
-    // Find course belonging to logged-in instructor
     const course = await Course.findOne({
       _id: courseId,
       instructor: instructorId,
@@ -289,37 +278,95 @@ const publishCourse = async (req, res) => {
       });
     }
 
-    // Validate required course details before publishing
-    if (course.status === "Draft") {
-      if (
-        !course.title ||
-        !course.description ||
-        !course.category ||
-        !course.difficultyLevel ||
-        !course.duration ||
-        course.price == null
-      ) {
-        return res.status(HttpStatusCode.BAD_REQUEST).json({
-          success: false,
-          message: Messages.COMPLETE_COURSE_DETAILS,
-        });
-      }
-
-      // Draft -> Published
-      course.status = "Published";
-    } else {
-      // Published -> Draft
-      course.status = "Draft";
+    // Check required course details
+    if (
+      !course.title ||
+      !course.description ||
+      !course.category ||
+      !course.difficultyLevel ||
+      !course.duration ||
+      course.price == null
+    ) {
+      return res.status(HttpStatusCode.BAD_REQUEST).json({
+        success: false,
+        message: Messages.COMPLETE_COURSE_DETAILS,
+      });
     }
+
+    // Check current status
+    if (course.status === "Published") {
+      return res.status(HttpStatusCode.BAD_REQUEST).json({
+        success: false,
+        message: "Course is already published",
+      });
+    }
+
+    // Draft -> Published
+    course.status = "Published";
 
     await course.save();
 
     return res.status(HttpStatusCode.SUCCESS).json({
       success: true,
-      message:
-        course.status === "Published"
-          ? Messages.COURSE_PUBLISHED
-          : "Course moved to Draft successfully",
+      message: Messages.COURSE_PUBLISHED,
+      data: course,
+    });
+  } catch (error) {
+    return res.status(HttpStatusCode.BAD_REQUEST).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Move Course to Draft (Published -> Draft)
+const draftCourse = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const instructorId = req.user?.userId;
+
+    if (!instructorId) {
+      return res.status(HttpStatusCode.UNAUTHORIZED).json({
+        success: false,
+        message: Messages.INSTRUCTOR_AUTH_REQUIRED,
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(courseId)) {
+      return res.status(HttpStatusCode.BAD_REQUEST).json({
+        success: false,
+        message: Messages.INVALID_COURSE_ID,
+      });
+    }
+
+    const course = await Course.findOne({
+      _id: courseId,
+      instructor: instructorId,
+    });
+
+    if (!course) {
+      return res.status(HttpStatusCode.NOT_FOUND).json({
+        success: false,
+        message: Messages.COURSE_NOT_FOUND_OR_UNAUTHORIZED,
+      });
+    }
+
+    // Check current status
+    if (course.status === "Draft") {
+      return res.status(HttpStatusCode.BAD_REQUEST).json({
+        success: false,
+        message: "Course is already in Draft",
+      });
+    }
+
+    // Published -> Draft
+    course.status = "Draft";
+
+    await course.save();
+
+    return res.status(HttpStatusCode.SUCCESS).json({
+      success: true,
+      message: "Course moved to Draft successfully",
       data: course,
     });
   } catch (error) {
@@ -339,4 +386,5 @@ export {
   updateCourse,
   deleteCourse,
   publishCourse,
+  draftCourse,
 };

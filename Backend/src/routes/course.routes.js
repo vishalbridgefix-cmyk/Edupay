@@ -1,15 +1,14 @@
-
 import express from "express";
 import * as courseController from "../controllers/course.controller.js";
 
 import {
-    validateCourse,
-    validateUpdateCourse
+  validateCourse,
+  validateUpdateCourse,
 } from "../validations/course.validation.js";
 
 import {
-    isAuthenticated,
-    instructorMiddleware
+  isAuthenticated,
+  instructorMiddleware,
 } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -20,7 +19,6 @@ const router = express.Router();
  *   name: Courses
  *   description: Edupay Course Management APIs
  */
-
 
 /**
  * @swagger
@@ -51,13 +49,12 @@ const router = express.Router();
 
 // Create Course
 router.post(
-    "/",
-    isAuthenticated,
-    instructorMiddleware,
-    validateCourse,
-    courseController.createCourse
+  "/",
+  isAuthenticated,
+  instructorMiddleware,
+  validateCourse,
+  courseController.createCourse,
 );
-
 
 /**
  * @swagger
@@ -73,11 +70,7 @@ router.post(
  */
 
 // Get All Published Courses (Public API)
-router.get(
-    "/",
-    courseController.getAllCourses
-);
-
+router.get("/", courseController.getAllCourses);
 
 /**
  * @swagger
@@ -98,12 +91,11 @@ router.get(
 
 // Get Instructor's Own Courses
 router.get(
-    "/getCourses",
-    isAuthenticated,
-    instructorMiddleware,
-    courseController.getMyCourses
+  "/getCourses",
+  isAuthenticated,
+  instructorMiddleware,
+  courseController.getMyCourses,
 );
-
 
 /**
  * @swagger
@@ -128,11 +120,7 @@ router.get(
  */
 
 // Get Course By ID
-router.get(
-    "/:courseId",
-    courseController.getCourseById
-);
-
+router.get("/:courseId", courseController.getCourseById);
 
 /**
  * @swagger
@@ -172,13 +160,12 @@ router.get(
 
 // Update Course
 router.patch(
-    "/:courseId",
-    isAuthenticated,
-    instructorMiddleware,
-    validateUpdateCourse,
-    courseController.updateCourse
+  "/:courseId",
+  isAuthenticated,
+  instructorMiddleware,
+  validateUpdateCourse,
+  courseController.updateCourse,
 );
-
 
 /**
  * @swagger
@@ -208,12 +195,11 @@ router.patch(
 
 // Delete Course
 router.delete(
-    "/:courseId",
-    isAuthenticated,
-    instructorMiddleware,
-    courseController.deleteCourse
+  "/:courseId",
+  isAuthenticated,
+  instructorMiddleware,
+  courseController.deleteCourse,
 );
-
 
 /**
  * @swagger
@@ -227,7 +213,6 @@ router.delete(
  *       - in: path
  *         name: courseId
  *         required: true
- *         description: MongoDB course ID
  *         schema:
  *           type: string
  *     responses:
@@ -243,10 +228,44 @@ router.delete(
 
 // Publish Course
 router.patch(
-    "/:courseId/publish",
-    isAuthenticated,
-    instructorMiddleware,
-    courseController.publishCourse
+  "/:courseId/publish",
+  isAuthenticated,
+  instructorMiddleware,
+  courseController.publishCourse,
 );
+
+/**
+ * @swagger
+ * /api/instructor/courses/{courseId}/draft:
+ *   patch:
+ *     summary: Move a published course to draft
+ *     tags: [Courses]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: courseId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Course moved to draft successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: Course not found
+ */
+
+// Move Course to Draft
+router.patch(
+  "/:courseId/draft",
+  isAuthenticated,
+  instructorMiddleware,
+  courseController.draftCourse,
+);
+
 
 export default router;

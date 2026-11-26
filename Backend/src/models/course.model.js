@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// Main Course Schema
 const courseSchema = new mongoose.Schema(
   {
     title: {

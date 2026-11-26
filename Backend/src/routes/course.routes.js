@@ -6,6 +6,7 @@ import {
   validateUpdateCourse,
 } from "../validations/course.validation.js";
 
+
 import {
   isAuthenticated,
   instructorMiddleware,

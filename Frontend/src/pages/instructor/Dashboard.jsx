@@ -1,4 +1,3 @@
-
 import StatsCards from "../../components/StatsCards";
 import LearnerEngagement from "../../components/LearnerEngagement";
 import RecentActivity from "../../components/RecentActivity";
@@ -9,7 +8,7 @@ import {
   learnerEngagementData,
   recentActivities,
   topCourses,
-} from "../../helper/instructorData";
+} from "../../helper/dashboardData";
 
 function Dashboard() {
   return (

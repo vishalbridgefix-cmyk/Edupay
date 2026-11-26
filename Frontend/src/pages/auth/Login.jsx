@@ -64,19 +64,19 @@ export default function Login() {
   };
 
   return (
-    <main className="h-screen w-full overflow-hidden bg-[#f7f7fb]">
+    <main className="min-h-screen w-full bg-[#f7f7fb]">
       <div className="mx-auto flex h-full w-full max-w-[1600px] justify-center bg-white">
-        <section className="flex w-full items-center justify-center px-4 py-4 sm:px-8 sm:py-6 lg:px-12 lg:py-4">
+        <section className="flex min-h-screen w-full items-center justify-center px-4 py-6 sm:px-8 sm:py-8 lg:px-12 lg:py-6">
           <div className="w-full max-w-xl">
             <h2 className="text-2xl font-bold text-[#19182f] sm:text-3xl">
               Welcome to EduPay
             </h2>
 
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-1.5 text-sm text-gray-500">
               Sign in or create your account to continue.
             </p>
 
-            <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:mt-10 sm:p-8">
+            <div className="mt-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:mt-6 sm:p-7">
               <div>
                 <h3 className="text-xl font-bold text-[#19182f]">
                   Good to see you again
@@ -90,7 +90,7 @@ export default function Login() {
               <form
                 onSubmit={handleSubmit}
                 noValidate
-                className="mt-7 space-y-5"
+                className="mt-7 space-y-4"
               >
                 <FormInput
                   label="Email address"

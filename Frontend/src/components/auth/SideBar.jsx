@@ -2,18 +2,17 @@ import React from "react";
 
 const SideBar = () => {
   return (
-    <section className="hidden min-h-screen w-full flex-col bg-[#242044] px-7 py-8 text-white sm:px-10 lg:flex lg:px-14 lg:py-12">
+    <section className="hidden h-screen w-full flex-col overflow-hidden bg-[#242044] px-6 py-5 text-white lg:flex xl:px-10 xl:py-8">
       <a href="/" className="w-fit text-3xl font-bold tracking-tight">
         edu<span className="text-violet-400">pay</span>
       </a>
 
-      <div className="mt-10 h-1 w-20 rounded-full bg-violet-400" />
-
-      <div className="mt-10">
-        <h1 className="max-w-lg text-3xl font-bold leading-tight sm:text-4xl">
+      <div className="mt-5 h-1 w-20 shrink-0 rounded-full bg-violet-400" />
+      <div className="mt-5 shrink-0">
+        <h1 className="max-w-lg text-2xl font-bold leading-tight xl:text-4xl">
           Your learning journey starts here.
         </h1>
-        <p className="mt-5 text-base text-violet-100/80">
+        <p className="mt-3 text-sm text-violet-100/80 xl:mt-5 xl:text-base">
           One account. Every learning experience.
         </p>
       </div>
@@ -61,7 +60,7 @@ const SideBar = () => {
         </div>
       </div>
 
-      <p className="mt-auto pt-10 text-xs text-violet-200/60">
+      <p className="mt-auto shrink-0 pt-4 text-xs text-violet-200/60">
         Trusted learning, teaching and progress.
       </p>
     </section>

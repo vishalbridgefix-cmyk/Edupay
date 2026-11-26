@@ -169,7 +169,6 @@ export const validationMessages = Object.freeze({
   FIELD_REQUIRED: "This field is required",
   VALUE_INVALID: "Invalid value provided",
   COURSE_VALIDATION_FAILED: "Course validation failed",
-<<<<<<< HEAD
 
       LESSON_TITLE_REQUIRED: "Lesson title is required",
     LESSON_TITLE_MIN: "Lesson title must be at least 3 characters",
@@ -197,6 +196,4 @@ export const validationMessages = Object.freeze({
     LESSON_MODULE_REQUIRED: "Module ID is required",
     LESSON_MODULE_NOT_FOUND: "Module not found",
     LESSON_UNAUTHORIZED: "You are not authorized to modify this lesson",
-=======
->>>>>>> 3a33ab416ac14e0d0cbf589eecc896d33b596b48
 });

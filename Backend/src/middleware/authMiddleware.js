@@ -1,4 +1,3 @@
-
 import jwt from "jsonwebtoken";
 import tokenBlacklistModel from "../models/tokenBlacklist.model.js";
 import { HttpStatusCode } from "../constants/httpStatus.js";
@@ -31,17 +30,11 @@ export const isAuthenticated = async (req, res, next) => {
     }
 
     // Verify JWT token
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET
-    );
-
-    console.log("Decoded Token:", decoded);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     req.user = decoded;
 
     next();
-
   } catch (error) {
     return res.status(HttpStatusCode.UNAUTHORIZED).json({
       success: false,
@@ -49,7 +42,6 @@ export const isAuthenticated = async (req, res, next) => {
     });
   }
 };
-
 
 // Instructor Role Middleware
 export const instructorMiddleware = (req, res, next) => {

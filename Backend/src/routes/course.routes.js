@@ -67,10 +67,6 @@ const router = express.Router();
  *                 type: number
  *                 minimum: 0
  *                 example: 2999
- *               status:
- *                 type: string
- *                 enum: [Draft, Published]
- *                 example: Draft
  *     responses:
  *       201:
  *         description: Course created successfully
@@ -213,10 +209,6 @@ router.get("/:courseId", courseController.getCourseById);
  *                 type: number
  *                 minimum: 0
  *                 example: 3999
- *               status:
- *                 type: string
- *                 enum: [Draft, Published]
- *                 example: Draft
  *     responses:
  *       200:
  *         description: Course updated successfully

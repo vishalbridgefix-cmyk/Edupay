@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Lesson from "../models/lesson.model.js";
-//import Module from "../models/module.model.js";
+import Module from "../models/module.model.js";
 import Course from "../models/course.model.js";
 import { HttpStatusCode } from "../constants/httpStatus.js";
 import { Messages } from "../constants/messages.js";
@@ -145,6 +145,8 @@ const createLesson = async (req, res) => {
 // GET ALL LESSONS BY MODULE ID
 const getLessonsByModule = async (req, res) => {
   try {
+    console.log("GET LESSONS BY MODULE CONTROLLER CALLED");
+    console.log("Params:", req.params);
     const { moduleId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(moduleId)) {

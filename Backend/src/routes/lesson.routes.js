@@ -17,13 +17,13 @@ router.post(
 
 // Get All Lessons By Module ID
 router.get(
-    "/:moduleId",
+    "/module/:moduleId",
     lessonController.getLessonsByModule
 );
 
 // Get Lesson By ID
 router.get(
-    "/:lessonId",
+    "/getLesson/:lessonId",
     lessonController.getLessonById
 );
 

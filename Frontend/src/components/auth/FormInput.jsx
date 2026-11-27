@@ -9,6 +9,7 @@ const FormInput = ({
   onChange,
   error,
   className = "",
+    inputClassName = "",
   required = false,
   rightElement,
   ...props
@@ -39,7 +40,8 @@ const FormInput = ({
                 ? "border-red-500 focus:border-red-500 focus:ring-red-500/10"
                 : "border-gray-200"
             } 
-              ${rightElement ? "pr-16" : ""}`}
+              ${rightElement ? "pr-16" : ""}
+              ${inputClassName}`}
           {...props}
         />
 

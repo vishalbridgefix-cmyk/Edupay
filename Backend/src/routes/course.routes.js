@@ -1,3 +1,4 @@
+
 import express from "express";
 import * as courseController from "../controllers/course.controller.js";
 
@@ -5,7 +6,6 @@ import {
   validateCourse,
   validateUpdateCourse,
 } from "../validations/course.validation.js";
-
 
 import {
   isAuthenticated,
@@ -26,6 +26,7 @@ const router = express.Router();
  * /api/instructor/courses:
  *   post:
  *     summary: Create a new course
+ *     description: Create a new course by an authenticated instructor.
  *     tags: [Courses]
  *     security:
  *       - bearerAuth: []
@@ -35,8 +36,41 @@ const router = express.Router();
  *         application/json:
  *           schema:
  *             type: object
- *             additionalProperties: true
- *             description: Course details required by course validation
+ *             required:
+ *               - title
+ *               - description
+ *               - category
+ *               - difficultyLevel
+ *               - duration
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: Full Stack Web Development
+ *               description:
+ *                 type: string
+ *                 example: Learn frontend and backend development using HTML, CSS, JavaScript, React, Node.js, and MongoDB.
+ *               thumbnail:
+ *                 type: string
+ *                 example: https://example.com/course-thumbnail.jpg
+ *               category:
+ *                 type: string
+ *                 example: Web Development
+ *               difficultyLevel:
+ *                 type: string
+ *                 enum: [Beginner, Intermediate, Advanced]
+ *                 example: Beginner
+ *               duration:
+ *                 type: number
+ *                 minimum: 1
+ *                 example: 40
+ *               price:
+ *                 type: number
+ *                 minimum: 0
+ *                 example: 2999
+ *               status:
+ *                 type: string
+ *                 enum: [Draft, Published]
+ *                 example: Draft
  *     responses:
  *       201:
  *         description: Course created successfully
@@ -46,6 +80,8 @@ const router = express.Router();
  *         description: Unauthorized
  *       403:
  *         description: Forbidden
+ *       500:
+ *         description: Internal server error
  */
 
 // Create Course
@@ -62,6 +98,7 @@ router.post(
  * /api/instructor/courses:
  *   get:
  *     summary: Get all published courses
+ *     description: Fetch all published courses.
  *     tags: [Courses]
  *     responses:
  *       200:
@@ -78,6 +115,7 @@ router.get("/", courseController.getAllCourses);
  * /api/instructor/courses/getCourses:
  *   get:
  *     summary: Get instructor's own courses
+ *     description: Fetch all courses created by the authenticated instructor.
  *     tags: [Courses]
  *     security:
  *       - bearerAuth: []
@@ -88,6 +126,8 @@ router.get("/", courseController.getAllCourses);
  *         description: Unauthorized
  *       403:
  *         description: Forbidden
+ *       500:
+ *         description: Internal server error
  */
 
 // Get Instructor's Own Courses
@@ -103,6 +143,7 @@ router.get(
  * /api/instructor/courses/{courseId}:
  *   get:
  *     summary: Get course by ID
+ *     description: Fetch a course using its MongoDB ID.
  *     tags: [Courses]
  *     parameters:
  *       - in: path
@@ -111,6 +152,7 @@ router.get(
  *         description: MongoDB course ID
  *         schema:
  *           type: string
+ *           example: 674abc1234567890abcdef12
  *     responses:
  *       200:
  *         description: Course fetched successfully
@@ -128,6 +170,7 @@ router.get("/:courseId", courseController.getCourseById);
  * /api/instructor/courses/{courseId}:
  *   patch:
  *     summary: Update an existing course
+ *     description: Update course details using course ID.
  *     tags: [Courses]
  *     security:
  *       - bearerAuth: []
@@ -138,14 +181,42 @@ router.get("/:courseId", courseController.getCourseById);
  *         description: MongoDB course ID
  *         schema:
  *           type: string
+ *           example: 674abc1234567890abcdef12
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             additionalProperties: true
- *             description: Course fields to update
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: Advanced Full Stack Web Development
+ *               description:
+ *                 type: string
+ *                 example: Learn advanced frontend and backend development using React, Node.js, and MongoDB.
+ *               thumbnail:
+ *                 type: string
+ *                 example: https://example.com/updated-thumbnail.jpg
+ *               category:
+ *                 type: string
+ *                 example: Web Development
+ *               difficultyLevel:
+ *                 type: string
+ *                 enum: [Beginner, Intermediate, Advanced]
+ *                 example: Intermediate
+ *               duration:
+ *                 type: number
+ *                 minimum: 1
+ *                 example: 60
+ *               price:
+ *                 type: number
+ *                 minimum: 0
+ *                 example: 3999
+ *               status:
+ *                 type: string
+ *                 enum: [Draft, Published]
+ *                 example: Draft
  *     responses:
  *       200:
  *         description: Course updated successfully
@@ -157,6 +228,8 @@ router.get("/:courseId", courseController.getCourseById);
  *         description: Forbidden
  *       404:
  *         description: Course not found
+ *       500:
+ *         description: Internal server error
  */
 
 // Update Course
@@ -173,6 +246,7 @@ router.patch(
  * /api/instructor/courses/{courseId}:
  *   delete:
  *     summary: Delete a course
+ *     description: Delete a course using its MongoDB ID.
  *     tags: [Courses]
  *     security:
  *       - bearerAuth: []
@@ -183,6 +257,7 @@ router.patch(
  *         description: MongoDB course ID
  *         schema:
  *           type: string
+ *           example: 674abc1234567890abcdef12
  *     responses:
  *       200:
  *         description: Course deleted successfully
@@ -192,6 +267,8 @@ router.patch(
  *         description: Forbidden
  *       404:
  *         description: Course not found
+ *       500:
+ *         description: Internal server error
  */
 
 // Delete Course
@@ -204,9 +281,10 @@ router.delete(
 
 /**
  * @swagger
- * /api/instructor/courses/{courseId}/publish:
+ * /api/instructor/courses/publish/{courseId}:
  *   patch:
  *     summary: Publish a course
+ *     description: Change course status to Published.
  *     tags: [Courses]
  *     security:
  *       - bearerAuth: []
@@ -214,8 +292,10 @@ router.delete(
  *       - in: path
  *         name: courseId
  *         required: true
+ *         description: MongoDB course ID
  *         schema:
  *           type: string
+ *           example: 674abc1234567890abcdef12
  *     responses:
  *       200:
  *         description: Course published successfully
@@ -225,11 +305,13 @@ router.delete(
  *         description: Forbidden
  *       404:
  *         description: Course not found
+ *       500:
+ *         description: Internal server error
  */
 
 // Publish Course
 router.patch(
-  "/:courseId/publish",
+  "/publish/:courseId",
   isAuthenticated,
   instructorMiddleware,
   courseController.publishCourse,
@@ -237,9 +319,10 @@ router.patch(
 
 /**
  * @swagger
- * /api/instructor/courses/{courseId}/draft:
+ * /api/instructor/courses/draft/{courseId}:
  *   patch:
  *     summary: Move a published course to draft
+ *     description: Change course status to Draft.
  *     tags: [Courses]
  *     security:
  *       - bearerAuth: []
@@ -247,8 +330,10 @@ router.patch(
  *       - in: path
  *         name: courseId
  *         required: true
+ *         description: MongoDB course ID
  *         schema:
  *           type: string
+ *           example: 674abc1234567890abcdef12
  *     responses:
  *       200:
  *         description: Course moved to draft successfully
@@ -258,15 +343,16 @@ router.patch(
  *         description: Forbidden
  *       404:
  *         description: Course not found
+ *       500:
+ *         description: Internal server error
  */
 
 // Move Course to Draft
 router.patch(
-  "/:courseId/draft",
+  "/draft/:courseId",
   isAuthenticated,
   instructorMiddleware,
   courseController.draftCourse,
 );
-
 
 export default router;

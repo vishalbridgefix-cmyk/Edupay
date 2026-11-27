@@ -1,3 +1,4 @@
+
 import express from "express";
 
 import {
@@ -31,19 +32,41 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             required:
- *               - name
+ *               - fullName
  *               - email
+ *               - phone
  *               - password
  *             properties:
- *               name:
+ *               fullName:
  *                 type: string
  *                 example: John Doe
  *               email:
  *                 type: string
+ *                 format: email
  *                 example: john@example.com
+ *               phone:
+ *                 type: string
+ *                 example: "9876543210"
+ *               age:
+ *                 type: number
+ *                 example: 25
+ *               gender:
+ *                 type: string
+ *                 enum: [male, female, other]
+ *                 example: male
  *               password:
  *                 type: string
  *                 example: Password@123
+ *               address:
+ *                 type: string
+ *                 example: Bhopal, Madhya Pradesh, India
+ *               ProfileImage:
+ *                 type: string
+ *                 example: https://example.com/profile.jpg
+ *               role:
+ *                 type: string
+ *                 enum: [learner, instructor, admin]
+ *                 example: learner
  *     responses:
  *       201:
  *         description: User registered successfully
@@ -73,6 +96,7 @@ router.post("/register", registerController);
  *             properties:
  *               email:
  *                 type: string
+ *                 format: email
  *                 example: john@example.com
  *               password:
  *                 type: string

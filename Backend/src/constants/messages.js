@@ -12,7 +12,7 @@ export const Messages = Object.freeze({
   FAILED_IMAGE_UPLOAD: "Image upload failed",
   UPLOAD_COURSE_THUMBNAIL: "Please upload a course thumbnail",
   UPLOAD_THUMBNAIL_SUCCESSFULLY: "Course thumbnail uploaded successfully",
-  UPLOAD_THUMBNAIL_FAILED: "Course thumbnail upload failed"
+  UPLOAD_THUMBNAIL_FAILED: "Course thumbnail upload failed",
 
   // Authentication Messages
   LOGIN_SUCCESS: "Login successful",

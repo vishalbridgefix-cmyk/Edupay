@@ -7,6 +7,13 @@ export const Messages = Object.freeze({
   FETCHED: "Data fetched successfully",
   ALL_COURSES_FETCHED: "All published courses fetched successfully",
 
+  UPLOAD_IMAGE : "Please upload an image",
+  SUCCESSFULLY_IMAGE_UPLOAD: "Image uploaded successfully",
+  FAILED_IMAGE_UPLOAD: "Image upload failed",
+  UPLOAD_COURSE_THUMBNAIL: "Please upload a course thumbnail",
+  UPLOAD_THUMBNAIL_SUCCESSFULLY: "Course thumbnail uploaded successfully",
+  UPLOAD_THUMBNAIL_FAILED: "Course thumbnail upload failed"
+
   // Authentication Messages
   LOGIN_SUCCESS: "Login successful",
   LOGOUT_SUCCESS: "Logout successful",
@@ -16,12 +23,16 @@ export const Messages = Object.freeze({
   FORBIDDEN: "You are not authorized to perform this action",
   TOKEN_EXPIRED: "Authentication token has expired",
   INVALID_TOKEN: "Invalid authentication token",
+  ALREADY_PUBLISHED: "Course is already published",
+  ALREADY_IN_DRAFT: "Course is already in Draft",
+  MOVED_DRAFT_SUCCESSFULLY : "Course moved to Draft successfully",
 
   // Validation Messages
   VALIDATION_ERROR: "Validation failed",
   REQUIRED_FIELDS: "Please provide all required fields",
   INVALID_ID: "Invalid ID provided",
   INVALID_INPUT: "Invalid input data",
+  NOT_AUTHORIZED: "You are not authorized to update this course",
 
   // Resource Messages
   NOT_FOUND: "Resource not found",

@@ -152,7 +152,7 @@ const updateCourse = async (req, res) => {
     if (existingCourse.instructor.toString() !== instructorId.toString()) {
       return res.status(HttpStatusCode.FORBIDDEN).json({
         success: false,
-        message: "You are not authorized to update this course",
+        message: Messages.NOT_AUTHORIZED,
       });
     }
 
@@ -297,7 +297,7 @@ const publishCourse = async (req, res) => {
     if (course.status === "Published") {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
         success: false,
-        message: "Course is already published",
+        message: Messages.ALREADY_PUBLISHED,
       });
     }
 
@@ -355,7 +355,7 @@ const draftCourse = async (req, res) => {
     if (course.status === "Draft") {
       return res.status(HttpStatusCode.BAD_REQUEST).json({
         success: false,
-        message: "Course is already in Draft",
+        message: Messages.ALREADY_IN_DRAFT,
       });
     }
 
@@ -366,7 +366,7 @@ const draftCourse = async (req, res) => {
 
     return res.status(HttpStatusCode.SUCCESS).json({
       success: true,
-      message: "Course moved to Draft successfully",
+      message: Messages.MOVED_DRAFT_SUCCESSFULLY,
       data: course,
     });
   } catch (error) {

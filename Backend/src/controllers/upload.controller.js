@@ -1,6 +1,7 @@
 import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 
 import { HttpStatusCode } from "../constants/httpStatus.js";
+import { Messages } from "../constants/messages.js";
 
 // Upload Profile Image
 export const uploadImage = async (req, res) => {
@@ -9,7 +10,7 @@ export const uploadImage = async (req, res) => {
         if (!req.file) {
             return res.status(HttpStatusCode.BAD_REQUEST).json({
                 success: false,
-                message: "Please upload an image",
+                message: Messages.UPLOAD_IMAGE,
             });
         }
 
@@ -20,7 +21,7 @@ export const uploadImage = async (req, res) => {
 
         return res.status(HttpStatusCode.SUCCESS).json({
             success: true,
-            message: "Image uploaded successfully",
+            message: Messages.SUCCESSFULLY_IMAGE_UPLOAD,
             data: {
                 imageUrl: result.secure_url,
                 publicId: result.public_id,
@@ -33,7 +34,7 @@ export const uploadImage = async (req, res) => {
 
         return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: "Image upload failed",
+            message: Messages.FAILED_IMAGE_UPLOAD,
         });
 
     }
@@ -47,7 +48,7 @@ export const uploadCourseThumbnail = async (req, res) => {
         if (!req.file) {
             return res.status(HttpStatusCode.BAD_REQUEST).json({
                 success: false,
-                message: "Please upload a course thumbnail",
+                message: Messages.UPLOAD_COURSE_THUMBNAIL,
             });
         }
 
@@ -58,7 +59,7 @@ export const uploadCourseThumbnail = async (req, res) => {
 
         return res.status(HttpStatusCode.SUCCESS).json({
             success: true,
-            message: "Course thumbnail uploaded successfully",
+            message: Messages.UPLOAD_THUMBNAIL_SUCCESSFULLY,
             data: {
                 thumbnail: result.secure_url,
                 thumbnailPublicId: result.public_id,
@@ -71,7 +72,7 @@ export const uploadCourseThumbnail = async (req, res) => {
 
         return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: "Course thumbnail upload failed",
+            message: Messages.UPLOAD_THUMBNAIL_FAILED,
         });
 
     }

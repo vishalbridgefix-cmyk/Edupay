@@ -7,7 +7,7 @@ export const Messages = Object.freeze({
   FETCHED: "Data fetched successfully",
   ALL_COURSES_FETCHED: "All published courses fetched successfully",
 
-  UPLOAD_IMAGE : "Please upload an image",
+  UPLOAD_IMAGE: "Please upload an image",
   SUCCESSFULLY_IMAGE_UPLOAD: "Image uploaded successfully",
   FAILED_IMAGE_UPLOAD: "Image upload failed",
   UPLOAD_COURSE_THUMBNAIL: "Please upload a course thumbnail",
@@ -25,7 +25,7 @@ export const Messages = Object.freeze({
   INVALID_TOKEN: "Invalid authentication token",
   ALREADY_PUBLISHED: "Course is already published",
   ALREADY_IN_DRAFT: "Course is already in Draft",
-  MOVED_DRAFT_SUCCESSFULLY : "Course moved to Draft successfully",
+  MOVED_DRAFT_SUCCESSFULLY: "Course moved to Draft successfully",
 
   // Validation Messages
   VALIDATION_ERROR: "Validation failed",
@@ -76,6 +76,10 @@ export const Messages = Object.freeze({
   // Authorization Messages
   INSTRUCTOR_ONLY: "Only instructors can manage courses",
 
+  // User Messages
+  USER_FETCHED: "User Fetched successfully",
+  USER_UPDATED: "User Updated successfully",
+
   // Module Messages
   MODULE_TITLE_REQUIRED: "Module title is required",
   MODULE_CREATED: "Module created successfully",
@@ -89,13 +93,39 @@ export const Messages = Object.freeze({
 
   // Common
   NO_VALID_FIELDS: "No valid fields provided to update",
-// Authorization Messages
-INSTRUCTOR_ONLY: "Only instructors can manage courses",
 
-//User Messages
+  // Assignment Messages
+  ASSIGNMENT_TITLE_REQUIRED: "Assignment title is required",
+  ASSIGNMENT_CREATED: "Assignment created successfully",
+  ASSIGNMENT_FETCHED: "Assignments fetched successfully",
+  ASSIGNMENT_UPDATED: "Assignment updated successfully",
+  ASSIGNMENT_DELETED: "Assignment deleted successfully",
+  ASSIGNMENT_NOT_FOUND: "Assignment not found",
 
-USER_FETCHED:"User Fetched successFully",
-USER_UPDATED:"User Updated SuccesFully"
+  ASSIGNMENT_MODULE_REQUIRED: "Module ID is required",
+  ASSIGNMENT_MODULE_NOT_FOUND: "Module not found",
+  ASSIGNMENT_UNAUTHORIZED: "You are not authorized to manage this assignment",
+
+  ASSIGNMENT_CREATION_FAILED: "Failed to create assignment",
+  ASSIGNMENT_FETCH_FAILED: "Failed to fetch assignments",
+  ASSIGNMENT_UPDATE_FAILED: "Failed to update assignment",
+  ASSIGNMENT_DELETE_FAILED: "Failed to delete assignment",
+
+  ASSIGNMENT_INVALID_FORMAT: "Invalid assignment format",
+  ASSIGNMENT_INVALID_LEVEL: "Invalid assignment level",
+  ASSIGNMENT_INVALID_URL: "Please provide a valid assignment URL",
+  ASSIGNMENT_INVALID_DURATION: "Duration must be a non-negative number",
+
+  ASSIGNMENT_INVALID_TOTAL_MARKS: "Total marks must be greater than zero",
+  ASSIGNMENT_INVALID_PASSING_MARKS: "Passing marks cannot be negative",
+  ASSIGNMENT_PASSING_MARKS_EXCEEDED: "Passing marks cannot exceed total marks",
+
+  ASSIGNMENT_INVALID_STATUS: "Status must be draft or publish",
+  ASSIGNMENT_INVALID_DEADLINE: "Please provide a valid assignment deadline",
+
+  ASSIGNMENT_PUBLISHED: "Assignment published successfully",
+  ASSIGNMENT_ALREADY_PUBLISHED: "Assignment is already published",
+  ASSIGNMENT_DRAFT: "Assignment moved to draft successfully",
 });
 
 // Joi Validation Messages
@@ -181,30 +211,68 @@ export const validationMessages = Object.freeze({
   VALUE_INVALID: "Invalid value provided",
   COURSE_VALIDATION_FAILED: "Course validation failed",
 
-      LESSON_TITLE_REQUIRED: "Lesson title is required",
-    LESSON_TITLE_MIN: "Lesson title must be at least 3 characters",
-    LESSON_TITLE_MAX: "Lesson title cannot exceed 100 characters",
-    LESSON_CONTENT_TYPE_REQUIRED: "Lesson content type is required",
-    LESSON_CONTENT_TYPE_INVALID: "Content type must be video, article, slides or resources",
-    LESSON_DURATION_INVALID: "Lesson duration must be a non-negative number",
-    LESSON_ORDER_INVALID: "Lesson order must be a positive integer",
-    LESSON_URL_INVALID: "Please provide a valid URL",
-    LESSON_RESOURCE_NAME_REQUIRED: "Resource name is required",
-    LESSON_RESOURCE_URL_REQUIRED: "Resource URL is required",
+  // Lesson Validation
+  LESSON_TITLE_REQUIRED: "Lesson title is required",
+  LESSON_TITLE_MIN: "Lesson title must be at least 3 characters",
+  LESSON_TITLE_MAX: "Lesson title cannot exceed 100 characters",
+  LESSON_CONTENT_TYPE_REQUIRED: "Lesson content type is required",
+  LESSON_CONTENT_TYPE_INVALID:
+    "Content type must be video, article, slides or resources",
+  LESSON_DURATION_INVALID: "Lesson duration must be a non-negative number",
+  LESSON_ORDER_INVALID: "Lesson order must be a positive integer",
+  LESSON_URL_INVALID: "Please provide a valid URL",
+  LESSON_RESOURCE_NAME_REQUIRED: "Resource name is required",
+  LESSON_RESOURCE_URL_REQUIRED: "Resource URL is required",
 
-    // Success Messages
-    LESSON_CREATED: "Lesson created successfully",
-    LESSON_FETCHED: "Lessons fetched successfully",
-    LESSON_UPDATED: "Lesson updated successfully",
-    LESSON_DELETED: "Lesson deleted successfully",
+  // Lesson Success Messages
+  LESSON_CREATED: "Lesson created successfully",
+  LESSON_FETCHED: "Lessons fetched successfully",
+  LESSON_UPDATED: "Lesson updated successfully",
+  LESSON_DELETED: "Lesson deleted successfully",
 
-    // Error Messages
-    LESSON_NOT_FOUND: "Lesson not found",
-    LESSON_CREATION_FAILED: "Failed to create lesson",
-    LESSON_FETCH_FAILED: "Failed to fetch lessons",
-    LESSON_UPDATE_FAILED: "Failed to update lesson",
-    LESSON_DELETE_FAILED: "Failed to delete lesson",
-    LESSON_MODULE_REQUIRED: "Module ID is required",
-    LESSON_MODULE_NOT_FOUND: "Module not found",
-    LESSON_UNAUTHORIZED: "You are not authorized to modify this lesson",
+  // Lesson Error Messages
+  LESSON_NOT_FOUND: "Lesson not found",
+  LESSON_CREATION_FAILED: "Failed to create lesson",
+  LESSON_FETCH_FAILED: "Failed to fetch lessons",
+  LESSON_UPDATE_FAILED: "Failed to update lesson",
+  LESSON_DELETE_FAILED: "Failed to delete lesson",
+  LESSON_MODULE_REQUIRED: "Module ID is required",
+  LESSON_MODULE_NOT_FOUND: "Module not found",
+  LESSON_UNAUTHORIZED: "You are not authorized to modify this lesson",
+
+  // Assignment Validation
+  ASSIGNMENT_TITLE_REQUIRED: "Assignment title is required",
+  ASSIGNMENT_TITLE_MIN: "Assignment title must be at least 3 characters",
+  ASSIGNMENT_TITLE_MAX: "Assignment title cannot exceed 100 characters",
+  ASSIGNMENT_TITLE_INVALID: "Assignment title must be a string",
+
+  ASSIGNMENT_INSTRUCTIONS_REQUIRED: "Assignment instructions are required",
+  ASSIGNMENT_INSTRUCTIONS_INVALID: "Assignment instructions must be a string",
+
+  ASSIGNMENT_URL_REQUIRED: "URL is required for video assignments",
+  ASSIGNMENT_URL_INVALID: "Please provide a valid assignment URL",
+
+  ASSIGNMENT_FORMAT_REQUIRED: "Assignment format is required",
+  ASSIGNMENT_FORMAT_INVALID: "Format must be video, github, pdf or ppt",
+
+  ASSIGNMENT_DURATION_INVALID: "Duration must be at least 1",
+
+  ASSIGNMENT_LEVEL_REQUIRED: "Assignment level is required",
+  ASSIGNMENT_LEVEL_INVALID: "Level must be easy, medium or hard",
+
+  ASSIGNMENT_TOTAL_MARKS_REQUIRED: "Total marks are required",
+  ASSIGNMENT_TOTAL_MARKS_INVALID: "Total marks must be a number",
+  ASSIGNMENT_TOTAL_MARKS_MIN: "Total marks must be greater than zero",
+
+  ASSIGNMENT_PASSING_MARKS_INVALID: "Passing marks must be a number",
+  ASSIGNMENT_PASSING_MARKS_NEGATIVE: "Passing marks cannot be negative",
+
+  ASSIGNMENT_PASSING_MARKS_EXCEEDED: "Passing marks cannot exceed total marks",
+
+  ASSIGNMENT_STATUS_INVALID: "Status must be draft or publish",
+
+  ASSIGNMENT_DEADLINE_INVALID: "Please provide a valid assignment deadline",
+
+  ASSIGNMENT_UPDATE_FIELDS_REQUIRED:
+    "Please provide at least one field to update",
 });

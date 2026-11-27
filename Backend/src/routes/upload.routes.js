@@ -1,18 +1,27 @@
+
 import express from "express";
 
 import upload from "../middleware/multer.js";
 
 import {
-  uploadImage,
+    uploadImage,
+    uploadCourseThumbnail
 } from "../controllers/upload.controller.js";
 
 const router = express.Router();
 
-// Profile image upload API
+// Profile Image Upload
 router.post(
-  "/image",
-  upload.single("image"),
-  uploadImage
+    "/image",
+    upload.single("image"),
+    uploadImage
+);
+
+// Course Thumbnail Upload
+router.post(
+    "/course-thumbnail",
+    upload.single("thumbnail"),
+    uploadCourseThumbnail
 );
 
 export default router;

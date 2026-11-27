@@ -2,47 +2,77 @@ import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 
 import { HttpStatusCode } from "../constants/httpStatus.js";
 
+// Upload Profile Image
 export const uploadImage = async (req, res) => {
+    try {
 
-  try {
+        if (!req.file) {
+            return res.status(HttpStatusCode.BAD_REQUEST).json({
+                success: false,
+                message: "Please upload an image",
+            });
+        }
 
-    // Check whether image is received
-    if (!req.file) {
-      return res.status(HttpStatusCode.BAD_REQUEST).json({
-        success: false,
-        message: "Please upload an image",
-      });
+        const result = await uploadToCloudinary(
+            req.file.buffer,
+            "EduPay/profileImages"
+        );
+
+        return res.status(HttpStatusCode.SUCCESS).json({
+            success: true,
+            message: "Image uploaded successfully",
+            data: {
+                imageUrl: result.secure_url,
+                publicId: result.public_id,
+            },
+        });
+
+    } catch (error) {
+
+        console.error("Profile Upload Error:", error);
+
+        return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Image upload failed",
+        });
+
     }
+};
 
-    // Upload image to Cloudinary
-    const result = await uploadToCloudinary(req.file.buffer);
 
-    // Return Cloudinary URL
-    return res.status(HttpStatusCode.SUCCESS).json({
+// Upload Course Thumbnail
+export const uploadCourseThumbnail = async (req, res) => {
+    try {
 
-      success: true,
+        if (!req.file) {
+            return res.status(HttpStatusCode.BAD_REQUEST).json({
+                success: false,
+                message: "Please upload a course thumbnail",
+            });
+        }
 
-      message: "Image uploaded successfully",
+        const result = await uploadToCloudinary(
+            req.file.buffer,
+            "EduPay/courseThumbnails"
+        );
 
-      data: {
-        imageUrl: result.secure_url,
-        publicId: result.public_id,
-      },
+        return res.status(HttpStatusCode.SUCCESS).json({
+            success: true,
+            message: "Course thumbnail uploaded successfully",
+            data: {
+                thumbnail: result.secure_url,
+                thumbnailPublicId: result.public_id,
+            },
+        });
 
-    });
+    } catch (error) {
 
-  } catch (error) {
+        console.error("Course Thumbnail Upload Error:", error);
 
-    console.error("Upload Error:", error);
+        return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Course thumbnail upload failed",
+        });
 
-    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
-
-      success: false,
-
-      message: "Image upload failed",
-
-    });
-
-  }
-
+    }
 };

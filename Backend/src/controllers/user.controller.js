@@ -1,4 +1,3 @@
-
 import { HttpStatusCode } from "../constants/httpStatus.js";
 import { Messages } from "../constants/messages.js";
 import userModel from "../models/user.model.js";

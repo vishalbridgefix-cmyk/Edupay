@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { useRoutes, Navigate } from "react-router-dom";
 import MainLayout from "../layout/mainLayout";
 import AuthLayout from "../layout/AuthLayout";
@@ -14,9 +15,8 @@ import Curriculum, {
   CurriculumLessonEditor,
 } from "../pages/instructor/Curriculum";
 function AppRoutes() {
-  const isAuthenticate = "instructor";
-
-  console.log("set is", isAuthenticate);
+ const { user } = useSelector((state) => state.auth);
+const isAuthenticate = user?.role;
 
   const routes = useRoutes([
     // Authentication Routes

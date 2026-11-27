@@ -1,11 +1,11 @@
-
 import { useState } from "react";
-import { Search, Bell } from "lucide-react";
+import { Search, Bell, ChevronDown, LogOut, UserRound } from "lucide-react";
 
-function Navbar({ user, title, subtitle }) {
+function Navbar({ user, title, subtitle, onLogout }) {
   const [search, setSearch] = useState("");
+  const [showProfile, setShowProfile] = useState(false);
 
-  const name = user?.name || "User";
+  const name = user?.fullName || user?.name || "User";
 
   const initials = name
     .split(" ")
@@ -49,8 +49,43 @@ function Navbar({ user, title, subtitle }) {
           <Bell size={14} />
         </button>
 
-        <div className="w-9 h-9 rounded-full bg-[#e8e1ff] text-[#7556e8] flex items-center justify-center text-[10px] font-semibold">
-          {initials}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setShowProfile(!showProfile)}
+            className="flex items-center gap-2"
+          >
+            <div className="w-9 h-9 rounded-full bg-[#e8e1ff] text-[#7556e8] flex items-center justify-center text-[10px] font-semibold">
+              {initials}
+            </div>
+
+            <ChevronDown size={14} className="text-gray-500" />
+          </button>
+
+          {showProfile && (
+            <div className="absolute right-0 top-12 z-50 w-48 bg-white border border-gray-200 rounded-xl shadow-lg p-2">
+              <div className="px-3 py-2 border-b border-gray-100">
+                <p className="text-sm font-semibold text-gray-800">
+                  {name}
+                </p>
+                <p className="text-xs text-gray-400">
+                  {user?.email}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowProfile(false);
+                  onLogout?.();
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2 mt-1 text-sm text-red-600 rounded-lg hover:bg-red-50"
+              >
+                <LogOut size={15} />
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

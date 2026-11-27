@@ -8,7 +8,11 @@ import Register from "../pages/auth/Register";
 import MyCourses from "../pages/instructor/MyCourses";
 import CourseBuilder from "../pages/instructor/CourseBuilder";
 import Dashboard from "../pages/instructor/Dashboard";
-import Curriculum from "../pages/instructor/Curriculum";
+
+import Curriculum, {
+  CurriculumOverview,
+  CurriculumLessonEditor,
+} from "../pages/instructor/Curriculum";
 function AppRoutes() {
   const isAuthenticate = "instructor";
 
@@ -69,9 +73,19 @@ function AppRoutes() {
           element: <CourseBuilder />,
         },
         {
-          path: "curriculum",
-          element: <Curriculum />,
-        },
+  path: "curriculum",
+  element: <Curriculum />,
+  children: [
+    {
+      index: true,
+      element: <CurriculumOverview />,
+    },
+    {
+      path: "lesson-editor",
+      element: <CurriculumLessonEditor />,
+    },
+  ],
+},
       ],
     },
 

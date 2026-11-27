@@ -1,5 +1,6 @@
 
 import { GripVertical } from "lucide-react";
+import FormInput from "../auth/FormInput";
 
 function ModuleItem({
     module,
@@ -26,14 +27,14 @@ function ModuleItem({
                 <div className="flex-1 min-w-0">
 
 
-                    <input
+                    <FormInput
+                        name={`module-${module.id}`}
                         value={module.title}
                         onChange={(e) =>
                             onUpdateTitle(module.id, e.target.value)
                         }
-                        className="bg-transparent w-full text-sm font-semibold text-gray-900 outline-none"
+                        inputClassName="!bg-transparent !border-0 !px-0 !py-0 !text-sm !font-semibold !text-gray-900 !rounded-none !ring-0"
                     />
-
 
                     <p className="text-xs text-gray-500 mt-2">
                         {module.lessons.length} lessons
@@ -63,8 +64,8 @@ function ModuleItem({
                                     key={item.id}
                                     onClick={() => onSelectLesson(module, item)}
                                     className={`w-full rounded-lg px-3 py-3 flex justify-between items-center gap-3 text-left text-xs ${selectedLessonId === item.id
-                                            ? "bg-violet-100 border border-violet-200 text-violet-700"
-                                            : "bg-white hover:text-violet-600"
+                                        ? "bg-violet-100 border border-violet-200 text-violet-700"
+                                        : "bg-white hover:text-violet-600"
                                         }`}
                                 >
                                     <span>

@@ -1,9 +1,15 @@
 
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  Outlet,
+  useOutletContext,
+} from "react-router-dom";
 import { FileText } from "lucide-react";
+
 import { curriculumData } from "../../helper/instructor/curriculumData.js";
-import { DEFAULT_LESSON } from "../../helper/instructor/curriculumConfig.js";
+
 import CourseSteps from "../../components/curriculum/CourseSteps";
 import CourseOutline from "../../components/curriculum/CourseOutline";
 import LessonDetails from "../../components/curriculum/LessonDetails";
@@ -11,93 +17,72 @@ import LearningResources from "../../components/curriculum/LearningResources";
 import LessonEditor from "../../components/curriculum/LessonEditor";
 import LessonSettings from "../../components/curriculum/LessonSettings";
 
+import { DEFAULT_LESSON } from "../../enums/curriculumEnums";
+
+const cloneData = (data) => JSON.parse(JSON.stringify(data));
+
+const prepareLesson = (lesson) => ({
+  ...DEFAULT_LESSON,
+  ...lesson,
+  format: lesson.type || lesson.format || "Video",
+});
+
+// Parent component: manages shared curriculum data
 function Curriculum() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const firstCourseId = Object.keys(curriculumData)[0];
-
-  const selectedCourse = location.state?.selectedCourse || {
-    id: firstCourseId,
-    title: "Demo Course",
-    modules: curriculumData[firstCourseId],
-  };
+  const [selectedCourse] = useState(
+    () => location.state?.selectedCourse
+  );
 
   const courseId = selectedCourse?.id;
 
-  const [view, setView] = useState("curriculum");
   const [modules, setModules] = useState([]);
-
   const [selectedModuleId, setSelectedModuleId] = useState(null);
   const [selectedLessonId, setSelectedLessonId] = useState(null);
-
   const [lesson, setLesson] = useState({ ...DEFAULT_LESSON });
   const [files, setFiles] = useState([]);
 
-  const cloneData = (data) => JSON.parse(JSON.stringify(data));
-
+  // Load selected course modules
   useEffect(() => {
-    let initialModules = [];
+    const initialModules =
+      location.state?.modules ||
+      selectedCourse?.modules ||
+      curriculumData[courseId] ||
+      [];
 
-    if (Array.isArray(location.state?.modules)) {
-      initialModules = cloneData(location.state.modules);
-    } else if (Array.isArray(selectedCourse?.modules)) {
-      initialModules = cloneData(selectedCourse.modules);
-    } else if (courseId && curriculumData[courseId]) {
-      initialModules = cloneData(curriculumData[courseId]);
-    }
+    const courseModules = cloneData(initialModules);
+    const firstModule = courseModules[0];
+    const firstLesson = firstModule?.lessons[0];
 
-    setModules(initialModules);
-
-    if (initialModules.length > 0) {
-      const firstModule = initialModules[0];
-      const firstLesson = firstModule.lessons[0];
-
-      setSelectedModuleId(firstModule.id);
-      setSelectedLessonId(firstLesson?.id || null);
-
-      setLesson(
-        firstLesson
-          ? {
-              ...DEFAULT_LESSON,
-              ...firstLesson,
-              format: firstLesson.type || firstLesson.format || "Video",
-            }
-          : { ...DEFAULT_LESSON }
-      );
-    } else {
-      setSelectedModuleId(null);
-      setSelectedLessonId(null);
-      setLesson({ ...DEFAULT_LESSON });
-    }
-
-    setView("curriculum");
+    setModules(courseModules);
+    setSelectedModuleId(firstModule?.id || null);
+    setSelectedLessonId(firstLesson?.id || null);
+    setLesson(
+      firstLesson ? prepareLesson(firstLesson) : { ...DEFAULT_LESSON }
+    );
     setFiles([]);
-  }, [courseId, location.key]);
-
-  const selectedModule = modules.find(
-    (module) => module.id === selectedModuleId
-  );
+  }, [courseId]);
 
   const currentModuleIndex = modules.findIndex(
     (module) => module.id === selectedModuleId
   );
 
+  const selectedModule = modules[currentModuleIndex];
+
   const currentLessonIndex = selectedModule?.lessons.findIndex(
     (item) => item.id === selectedLessonId
   );
 
+  // Select lesson
   const selectLesson = (module, selected) => {
     setSelectedModuleId(module.id);
     setSelectedLessonId(selected.id);
-
-    setLesson({
-      ...DEFAULT_LESSON,
-      ...selected,
-      format: selected.type || selected.format || "Video",
-    });
+    setLesson(prepareLesson(selected));
   };
 
+  // Update lesson fields
   const updateLesson = (e) => {
     const { name, value } = e.target;
 
@@ -107,6 +92,7 @@ function Curriculum() {
     }));
   };
 
+  // Add module
   const addModule = () => {
     const newModule = {
       id: Date.now(),
@@ -118,9 +104,9 @@ function Curriculum() {
     setSelectedModuleId(newModule.id);
     setSelectedLessonId(null);
     setLesson({ ...DEFAULT_LESSON });
-    setView("curriculum");
   };
 
+  // Add lesson
   const addLesson = () => {
     if (!selectedModuleId) {
       alert("Please select or add a module first.");
@@ -128,40 +114,30 @@ function Curriculum() {
     }
 
     const newLesson = {
+      ...DEFAULT_LESSON,
       id: Date.now(),
       title: "New lesson",
-      duration: "10 minutes",
-      type: "Video",
-      objective: "",
-      videoUrl: "",
-      notes: "",
-      difficulty: "Intermediate",
-      previewAccess: "Enrolled learners",
-      completionRule: "Mark as complete",
+      type: DEFAULT_LESSON.format,
     };
 
     setModules((prev) =>
       prev.map((module) =>
         module.id === selectedModuleId
-          ? {
-              ...module,
-              lessons: [...module.lessons, newLesson],
-            }
+          ? { ...module, lessons: [...module.lessons, newLesson] }
           : module
       )
     );
 
     setSelectedLessonId(newLesson.id);
-
     setLesson({
       ...DEFAULT_LESSON,
       title: newLesson.title,
-      duration: newLesson.duration,
     });
 
-    setView("editor");
+    navigate("/instructor/curriculum/lesson-editor");
   };
 
+  // Update module title
   const updateModuleTitle = (moduleId, value) => {
     setModules((prev) =>
       prev.map((module) =>
@@ -172,34 +148,32 @@ function Curriculum() {
     );
   };
 
+  // Save lesson
   const saveLesson = () => {
     if (!lesson.title.trim()) {
       alert("Please enter a lesson title.");
-      return;
+      return false;
     }
 
     setModules((prev) =>
       prev.map((module) =>
         module.id === selectedModuleId
           ? {
-              ...module,
-              lessons: module.lessons.map((item) =>
-                item.id === selectedLessonId
-                  ? {
-                      ...item,
-                      ...lesson,
-                      type: lesson.format,
-                    }
-                  : item
-              ),
-            }
+            ...module,
+            lessons: module.lessons.map((item) =>
+              item.id === selectedLessonId
+                ? { ...item, ...lesson, type: lesson.format }
+                : item
+            ),
+          }
           : module
       )
     );
 
-    setView("curriculum");
+    return true;
   };
 
+  // Upload resources
   const uploadFiles = (e) => {
     const selected = Array.from(e.target.files || []);
 
@@ -215,30 +189,28 @@ function Curriculum() {
     e.target.value = "";
   };
 
+  // Remove resource
   const removeFile = (id) => {
-    setFiles((prev) =>
-      prev.filter((file) => file.id !== id)
-    );
+    setFiles((prev) => prev.filter((file) => file.id !== id));
   };
 
+  // Navigate to course builder
   const openCourseBuilder = (showPreview = false) => {
-    if (!selectedCourse) {
-      navigate("/instructor/my-courses");
-      return;
-    }
+    const updatedModules = cloneData(modules);
 
     navigate("/instructor/course-builder", {
       state: {
         selectedCourse: {
           ...selectedCourse,
-          modules: cloneData(modules),
+          modules: updatedModules,
         },
         showPreview,
-        modules: cloneData(modules),
+        modules: updatedModules,
       },
     });
   };
 
+  // Show message when no course is selected
   if (!selectedCourse) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -267,121 +239,197 @@ function Curriculum() {
   }
 
   return (
+    <Outlet
+      context={{
+        selectedCourse,
+        modules,
+        setModules,
+        selectedModule,
+        selectedModuleId,
+        setSelectedModuleId,
+        selectedLessonId,
+        setSelectedLessonId,
+        lesson,
+        setLesson,
+        files,
+        currentModuleIndex,
+        currentLessonIndex,
+        selectLesson,
+        updateLesson,
+        addModule,
+        addLesson,
+        updateModuleTitle,
+        saveLesson,
+        uploadFiles,
+        removeFile,
+        openCourseBuilder,
+      }}
+    />
+  );
+}
+
+// Curriculum page
+export function CurriculumOverview() {
+  const navigate = useNavigate();
+
+  const {
+    selectedCourse,
+    modules,
+    selectedModule,
+    selectedModuleId,
+    selectedLessonId,
+    lesson,
+    setLesson,
+    setSelectedModuleId,
+    setSelectedLessonId,
+    files,
+    selectLesson,
+    addModule,
+    addLesson,
+    updateModuleTitle,
+    openCourseBuilder,
+  } = useOutletContext();
+
+  return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">
-          {view === "curriculum"
-            ? `${selectedCourse.title} - Curriculum`
-            : "Lesson editor"}
+          {selectedCourse.title} - Curriculum
         </h1>
 
         <p className="text-sm text-gray-500 mt-1">
-          {view === "curriculum"
-            ? "Organize modules, lessons and learning resources into a clear learning path."
-            : "Add lesson content, learning materials and a short knowledge check."}
+          Organize modules, lessons and learning resources into a clear learning path.
         </p>
       </div>
 
-      {view === "curriculum" && (
-        <>
-          <CourseSteps
-            onCourseDetails={() => openCourseBuilder(false)}
-            onPreview={() => openCourseBuilder(true)}
+      <CourseSteps
+        onCourseDetails={() => openCourseBuilder(false)}
+        onPreview={() => openCourseBuilder(true)}
+      />
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
+        <div className="xl:col-span-2">
+          <CourseOutline
+            modules={modules}
+            selectedModuleId={selectedModuleId}
+            selectedLessonId={selectedLessonId}
+            onAddModule={addModule}
+            onUpdateModuleTitle={updateModuleTitle}
+            onViewLessons={(moduleId) => {
+              setSelectedModuleId(moduleId);
+              setSelectedLessonId(null);
+              setLesson({ ...DEFAULT_LESSON });
+            }}
+            onSelectLesson={selectLesson}
+            onAddLesson={addLesson}
+          />
+        </div>
+
+        <div className="space-y-5">
+          <LessonDetails
+            selectedModule={selectedModule}
+            lesson={lesson}
+            selectedLessonId={selectedLessonId}
+            onEditLesson={() =>
+              navigate("/instructor/curriculum/lesson-editor")
+            }
           />
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
-            <div className="xl:col-span-2">
-              <CourseOutline
-                modules={modules}
-                selectedModuleId={selectedModuleId}
-                selectedLessonId={selectedLessonId}
-                onAddModule={addModule}
-                onUpdateModuleTitle={updateModuleTitle}
-                onViewLessons={(moduleId) => {
-                  setSelectedModuleId(moduleId);
-                  setSelectedLessonId(null);
-                  setLesson({ ...DEFAULT_LESSON });
-                }}
-                onSelectLesson={selectLesson}
-                onAddLesson={addLesson}
-              />
-            </div>
+          <LearningResources files={files} />
+        </div>
+      </div>
 
-            <div className="space-y-5">
-              <LessonDetails
-                selectedModule={selectedModule}
-                lesson={lesson}
-                selectedLessonId={selectedLessonId}
-                onEditLesson={() => setView("editor")}
-              />
+      <div className="flex justify-end mt-6">
+        <button
+          onClick={() => openCourseBuilder(true)}
+          className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-lg text-sm font-medium"
+        >
+          Continue to Preview →
+        </button>
+      </div>
+    </div>
+  );
+}
 
-              <LearningResources files={files} />
-            </div>
-          </div>
+// Lesson Editor page
+export function CurriculumLessonEditor() {
+  const navigate = useNavigate();
 
-          {/* Continue to Preview Button */}
-          <div className="flex justify-end mt-6">
-            <button
-              onClick={() => openCourseBuilder(true)}
-              className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-lg text-sm font-medium"
-            >
-              Continue to Preview →
-            </button>
-          </div>
-        </>
-      )}
+  const {
+    lesson,
+    setLesson,
+    selectedModule,
+    currentModuleIndex,
+    currentLessonIndex,
+    updateLesson,
+    saveLesson,
+    uploadFiles,
+    files,
+    removeFile,
+  } = useOutletContext();
 
-      {view === "editor" && (
-        <>
-          <div className="flex items-center justify-between gap-3">
-            <button
-              onClick={() => setView("curriculum")}
-              className="text-sm text-violet-600 font-medium"
-            >
-              ← Back to curriculum
-            </button>
+  const handleSave = () => {
+    if (saveLesson()) {
+      navigate("/instructor/curriculum");
+    }
+  };
 
-            <span className="text-xs bg-violet-50 text-violet-600 px-3 py-2 rounded-full">
-              Editing lesson
-            </span>
-          </div>
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">
+          Lesson editor
+        </h1>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
-            <div className="xl:col-span-2">
-              <LessonEditor
-                lesson={lesson}
-                selectedModule={selectedModule}
-                currentModuleIndex={currentModuleIndex}
-                currentLessonIndex={currentLessonIndex}
-                onUpdateLesson={updateLesson}
-                onFormatChange={(format) =>
-                  setLesson((prev) => ({
-                    ...prev,
-                    format,
-                  }))
-                }
-                onUploadFiles={uploadFiles}
-                onCancel={() => setView("curriculum")}
-                onSave={saveLesson}
-              />
-            </div>
+        <p className="text-sm text-gray-500 mt-1">
+          Add lesson content, learning materials and a short knowledge check.
+        </p>
+      </div>
 
-            <div className="space-y-5">
-              <LessonSettings
-                lesson={lesson}
-                onUpdateLesson={updateLesson}
-              />
+      <div className="flex items-center justify-between gap-3">
+        <button
+          onClick={() => navigate("/instructor/curriculum")}
+          className="text-sm text-violet-600 font-medium"
+        >
+          ← Back to curriculum
+        </button>
 
-              <LearningResources
-                files={files}
-                editable={true}
-                onUploadFiles={uploadFiles}
-                onRemoveFile={removeFile}
-              />
-            </div>
-          </div>
-        </>
-      )}
+        <span className="text-xs bg-violet-50 text-violet-600 px-3 py-2 rounded-full">
+          Editing lesson
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
+        <div className="xl:col-span-2">
+          <LessonEditor
+            lesson={lesson}
+            selectedModule={selectedModule}
+            currentModuleIndex={currentModuleIndex}
+            currentLessonIndex={currentLessonIndex}
+            onUpdateLesson={updateLesson}
+            onFormatChange={(format) =>
+              setLesson((prev) => ({ ...prev, format }))
+            }
+            onUploadFiles={uploadFiles}
+            onCancel={() => navigate("/instructor/curriculum")}
+            onSave={handleSave}
+          />
+        </div>
+
+        <div className="space-y-5">
+          <LessonSettings
+            lesson={lesson}
+            onUpdateLesson={updateLesson}
+          />
+
+          <LearningResources
+            files={files}
+            editable={true}
+            onUploadFiles={uploadFiles}
+            onRemoveFile={removeFile}
+          />
+        </div>
+      </div>
     </div>
   );
 }

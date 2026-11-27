@@ -1,4 +1,6 @@
 
+import FormInput from "../auth/FormInput";
+
 function LessonDetails({
   selectedModule,
   lesson,
@@ -16,44 +18,33 @@ function LessonDetails({
       </p>
 
       <div className="space-y-4">
-        
-        <div>
-          <label className="block text-[10px] text-gray-500 mb-2">
-            Lesson title
-          </label>
+        <FormInput
+          label="Lesson title"
+          name="lessonTitle"
+          value={lesson.title}
+          readOnly
+          placeholder="No lesson selected"
+          inputClassName="!bg-gray-50 !rounded-lg !px-3 !py-3 !text-xs"
+        />
 
-          <input
-            value={lesson.title}
-            readOnly
-            placeholder="No lesson selected"
-            className="w-full bg-gray-50 rounded-lg px-3 py-3 text-xs outline-none"
-          />
-        </div>
+        <FormInput
+          label="Content type"
+          name="contentType"
+          value={lesson.title ? `${lesson.format} lesson` : ""}
+          readOnly
+          placeholder="Not selected"
+          inputClassName="!bg-gray-50 !rounded-lg !px-3 !py-3 !text-xs"
+        />
 
-        <div>
-          <label className="block text-[10px] text-gray-500 mb-2">
-            Content type
-          </label>
+        <FormInput
+          label="Duration"
+          name="duration"
+          value={lesson.title ? lesson.duration : ""}
+          readOnly
+          placeholder="Not selected"
+          inputClassName="!bg-gray-50 !rounded-lg !px-3 !py-3 !text-xs"
+        />
 
-          <input
-            value={lesson.title ? `${lesson.format} lesson` : ""}
-            readOnly
-            placeholder="Not selected"
-            className="w-full bg-gray-50 rounded-lg px-3 py-3 text-xs outline-none"
-          />
-        </div>
-        <div>
-          <label className="block text-[10px] text-gray-500 mb-2">
-            Duration
-          </label>
-
-          <input
-            value={lesson.title ? lesson.duration : ""}
-            readOnly
-            placeholder="Not selected"
-            className="w-full bg-gray-50 rounded-lg px-3 py-3 text-xs outline-none"
-          />
-        </div>
         <button
           onClick={onEditLesson}
           disabled={!selectedLessonId}

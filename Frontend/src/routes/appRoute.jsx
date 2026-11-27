@@ -1,5 +1,4 @@
-
-import { useRoutes,Navigate } from "react-router-dom";
+import { useRoutes, Navigate } from "react-router-dom";
 import MainLayout from "../layout/mainLayout";
 import AuthLayout from "../layout/AuthLayout";
 
@@ -9,7 +8,11 @@ import Register from "../pages/auth/Register";
 import MyCourses from "../pages/instructor/MyCourses";
 import CourseBuilder from "../pages/instructor/CourseBuilder";
 import Dashboard from "../pages/instructor/Dashboard";
-import Curriculum from "../pages/instructor/Curriculum";
+
+import Curriculum, {
+  CurriculumOverview,
+  CurriculumLessonEditor,
+} from "../pages/instructor/Curriculum";
 function AppRoutes() {
   const isAuthenticate = "instructor";
 
@@ -32,7 +35,6 @@ function AppRoutes() {
       ],
     },
 
-    // Learner Routes
     {
       path: "/learner",
       element:
@@ -49,7 +51,6 @@ function AppRoutes() {
       ],
     },
 
-    // Instructor Routes
     {
       path: "/instructor",
       element:
@@ -61,7 +62,7 @@ function AppRoutes() {
       children: [
         {
           path: "dashboard",
-          element: <Dashboard/>,
+          element: <Dashboard />,
         },
         {
           path: "my-courses",
@@ -72,13 +73,22 @@ function AppRoutes() {
           element: <CourseBuilder />,
         },
         {
-          path: "Curriculum",
-          element: <Curriculum />,
-        },
+  path: "curriculum",
+  element: <Curriculum />,
+  children: [
+    {
+      index: true,
+      element: <CurriculumOverview />,
+    },
+    {
+      path: "lesson-editor",
+      element: <CurriculumLessonEditor />,
+    },
+  ],
+},
       ],
     },
 
-    // Admin Routes
     {
       path: "/admin",
       element:
@@ -94,8 +104,7 @@ function AppRoutes() {
         },
       ],
     },
-    
   ]);
-return routes;
+  return routes;
 }
 export default AppRoutes;

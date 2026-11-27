@@ -1,5 +1,6 @@
 
 import { FileText, FileArchive, File, Upload } from "lucide-react";
+import { RESOURCE_CONFIG } from "../../enums/curriculumEnums";
 
 function LearningResources({
   files,
@@ -7,7 +8,7 @@ function LearningResources({
   onUploadFiles,
   onRemoveFile,
 }) {
-  
+
   if (!editable) {
     return (
       <div className="bg-white rounded-xl border border-gray-100 p-5 min-h-[280px]">
@@ -75,9 +76,8 @@ function LearningResources({
         </span>
 
         <span className="text-[10px] text-gray-400 mt-2">
-          PDF, PPT, ZIP · Max 25 MB
+          {RESOURCE_CONFIG.allowedFormats.join(", ")} · Max {RESOURCE_CONFIG.maxSize}
         </span>
-
         <input
           type="file"
           multiple

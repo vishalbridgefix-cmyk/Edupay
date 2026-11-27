@@ -1,4 +1,6 @@
-import { LESSON_SETTINGS } from "../../helper/instructor/curriculumConfig.js";
+
+import FormInput from "../auth/FormInput";
+import { LESSON_SETTINGS } from "../../enums/curriculumEnums";
 
 function LessonSettings({ lesson, onUpdateLesson }) {
   return (
@@ -9,30 +11,32 @@ function LessonSettings({ lesson, onUpdateLesson }) {
 
       {LESSON_SETTINGS.map((setting) => (
         <div key={setting.name} className="mb-4">
-          <label className="block text-[10px] text-gray-500 mb-2">
-            {setting.label}
-          </label>
-
           {setting.type === "text" ? (
-            <input
+            <FormInput
+              label={setting.label}
               name={setting.name}
               value={lesson[setting.name]}
               onChange={onUpdateLesson}
-              className="w-full bg-gray-50 rounded-lg px-3 py-3 text-xs outline-none"
             />
           ) : (
-            <select
-              name={setting.name}
-              value={lesson[setting.name]}
-              onChange={onUpdateLesson}
-              className="w-full bg-gray-50 rounded-lg px-3 py-3 text-xs outline-none"
-            >
-              {setting.options.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+            <>
+              <label className="block text-[10px] text-gray-500 mb-2">
+                {setting.label}
+              </label>
+
+              <select
+                name={setting.name}
+                value={lesson[setting.name]}
+                onChange={onUpdateLesson}
+                className="w-full bg-gray-50 rounded-lg px-3 py-3 text-xs outline-none"
+              >
+                {setting.options.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </>
           )}
         </div>
       ))}

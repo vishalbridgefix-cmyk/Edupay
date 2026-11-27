@@ -1,13 +1,18 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import FormInput from "../../components/auth/FormInput";
 
 import { UserPlus } from "lucide-react";
 
+import { registerUser, resetAuthStatus } from "../../store/slice/authSlice";
 const roles = ["Learner", "Instructor", "Admin"];
 
 const Register = () => {
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+  const { loading, error, success } = useSelector((state) => state.auth);
 
   const [role, setRole] = useState("Learner");
   const [showPassword, setShowPassword] = useState(false);
@@ -125,28 +130,28 @@ const Register = () => {
     }));
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     const registerData = {
-      role,
-      fullName: formData?.fullName.trim(),
-      email: formData?.email.trim(),
-      phone: formData?.phone.trim(),
-      password: formData?.password,
-      profileImage: profileImageRef.current,
+      role: role.toLowerCase(),
+      fullName: formData.fullName.trim(),
+      email: formData.email.trim(),
+      phone: formData.phone.trim(),
+      password: formData.password,
+      profileImage: "",
     };
 
-    console.log("Register Data:", registerData);
+    dispatch(resetAuthStatus());
 
-    // Connect your registration API here.
-    // confirmPassword is used for validation and is not sent.
+    try {
+      await dispatch(registerUser(registerData));
+    } catch (error) {
+      // Error is already stored in Redux.
+    }
   }
-
   return (
     <main className="min-h-screen w-full bg-[#f7f7fb]">
       <div className="mx-auto flex min-h-screen w-full max-w-[1600px] justify-center bg-white">
@@ -345,12 +350,19 @@ const Register = () => {
                     />
                   </div>
                 </div>
+                {error && <p className="text-sm text-red-600">{error}</p>}
 
+                {success && (
+                  <p className="text-sm text-green-600">
+                    Account created successfully. Please sign in.
+                  </p>
+                )}
                 <button
                   type="submit"
-                  className="w-full rounded-xl bg-violet-600 px-5 py-4 text-sm font-bold text-white shadow-sm transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-200"
+                  disabled={loading}
+                  className="w-full rounded-xl bg-violet-600 px-5 py-4 text-sm font-bold text-white shadow-sm transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-200 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Create account →
+                  {loading ? "Creating account..." : "Create account →"}
                 </button>
               </form>
 

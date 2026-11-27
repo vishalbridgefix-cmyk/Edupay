@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, resetAuthStatus } from "../../store/slice/authSlice";
 import FormInput from "../../components/auth/FormInput";
 
 export default function Login() {
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
+  const { loading, error } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -34,19 +39,33 @@ export default function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     const loginData = {
-      email: formData?.email,
-      password: formData?.password,
+      email: formData.email.trim(),
+      password: formData.password,
     };
 
-    console.log("Login Data:", loginData);
+    dispatch(resetAuthStatus());
+
+    try {
+      const response = await dispatch(loginUser(loginData));
+
+      const role = response.user.role;
+
+      if (role === "instructor") {
+        navigate("/instructor/dashboard");
+      } else if (role === "learner") {
+        navigate("/learner/dashboard");
+      } else if (role === "admin") {
+        navigate("/admin/dashboard");
+      }
+    } catch (error) {
+      // Error is already stored in Redux.
+    }
   }
 
   const handleChange = (e) => {
@@ -138,12 +157,13 @@ export default function Login() {
                     Forgot password?
                   </button>
                 </div>
-
+                {error && <p className="text-sm text-red-600">{error}</p>}
                 <button
                   type="submit"
-                  className="w-full rounded-xl bg-violet-600 px-5 py-4 text-sm font-bold text-white transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-200"
+                  disabled={loading}
+                  className="w-full rounded-xl bg-violet-600 px-5 py-4 text-sm font-bold text-white transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-200 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Sign in →
+                  {loading ? "Signing in..." : "Sign in →"}
                 </button>
               </form>
 
